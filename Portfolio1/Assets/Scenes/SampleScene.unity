@@ -123,6 +123,36 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &103747459
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 103747460}
+  m_Layer: 0
+  m_Name: BulletSpaceLocation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &103747460
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 103747459}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.798, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 439242089}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &439242088
 GameObject:
   m_ObjectHideFlags: 0
@@ -151,13 +181,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 439242088}
-  m_LocalRotation: {x: 0.6938419, y: -0, z: -0, w: 0.72012734}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0.05490589, z: 1.2956842}
   m_LocalScale: {x: 0.2, y: 1.2529758, z: 0.2}
-  m_Children: []
+  m_Children:
+  - {fileID: 103747460}
   m_Father: {fileID: 709161996}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!136 &439242090
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -169,9 +200,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.50000024
-  m_Height: 2.0000005
+  m_Height: 1.7134619
   m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0.00000023841858, z: -0.00000008940699}
+  m_Center: {x: 0.000000074505806, y: -0.14326912, z: -0.00000024465075}
 --- !u!23 &439242091
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -266,6 +297,8 @@ MonoBehaviour:
   barrel: {fileID: 439242088}
   barrelPivot: {fileID: 1426332382}
   pitchSpeed: 1
+  BulletPrefab: {fileID: 3418314150999411876, guid: 385d1b1b06c29434f930c4c3de661671, type: 3}
+  BulletSpawnLocation: {fileID: 103747459}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -912,15 +945,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7386172842106961297, guid: 385d1b1b06c29434f930c4c3de661671, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.027
+      value: -0.005
       objectReference: {fileID: 0}
     - target: {fileID: 7386172842106961297, guid: 385d1b1b06c29434f930c4c3de661671, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.17
+      value: 1.155
       objectReference: {fileID: 0}
     - target: {fileID: 7386172842106961297, guid: 385d1b1b06c29434f930c4c3de661671, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.699
+      value: 2.401
       objectReference: {fileID: 0}
     - target: {fileID: 7386172842106961297, guid: 385d1b1b06c29434f930c4c3de661671, type: 3}
       propertyPath: m_LocalRotation.x
