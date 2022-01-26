@@ -8,6 +8,8 @@ public class Barrel : MonoBehaviour
     [SerializeField] GameObject barrel;
     [SerializeField] GameObject barrelPivot;
     [SerializeField] float pitchSpeed;
+    [SerializeField] GameObject BulletPrefab;
+    [SerializeField] GameObject BulletSpawnLocation;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,7 +27,10 @@ public class Barrel : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            //fire bullet
+        }
     }
 
     bool bPitchActive = false;
@@ -43,5 +48,10 @@ public class Barrel : MonoBehaviour
             barrelRotRate = 0.0f;
             bPitchActive = false;
         }
+    }
+
+    void Fire()
+    {
+
     }
 }
