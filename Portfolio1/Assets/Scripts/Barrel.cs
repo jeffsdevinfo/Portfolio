@@ -27,10 +27,10 @@ public class Barrel : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            //fire bullet
-        }
+        //if(Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    //fire bullet
+        //}
     }
 
     bool bPitchActive = false;
@@ -50,8 +50,9 @@ public class Barrel : MonoBehaviour
         }
     }
 
-    void Fire()
+    public void OnFire()
     {
-
+        Debug.Log("Fire Pressed");
+        Instantiate(BulletPrefab, BulletSpawnLocation.transform.position, BulletSpawnLocation.transform.rotation);
     }
 }
