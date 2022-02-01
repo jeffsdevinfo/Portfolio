@@ -11,7 +11,7 @@ public class Bullet : MonoBehaviour
     {
         rb = gameObject.GetComponent<Rigidbody>();
         //rb.velocity = new Vector3(rb.velocity.x * bulletVelocity, rb.velocity.y * bulletVelocity, rb.velocity.z * bulletVelocity);
-        rb.AddForce(gameObject.transform.forward * bulletVelocity, ForceMode.Force);
+        rb.AddForce(gameObject.transform.up * bulletVelocity, ForceMode.Force);
     }
 
     // Update is called once per frame
@@ -23,5 +23,17 @@ public class Bullet : MonoBehaviour
     private void FixedUpdate()
     {
         
+    }
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        StartCoroutine(TimerDestroy());
+    }
+
+    IEnumerator TimerDestroy()
+    {
+        yield return new WaitForSeconds(4.0f);        
+        Object.Destroy(gameObject);
     }
 }
