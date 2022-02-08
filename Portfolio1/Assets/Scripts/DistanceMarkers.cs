@@ -6,7 +6,7 @@ using TMPro;
 public class DistanceMarkers : MonoBehaviour
 {
     float rotationRadius;
-    int numberOfCircles = 40;
+    int numberOfCircles = 80;
     int numberOfVerticesPerCircle = 100;
     float circleIncrementDistance = 100;
 

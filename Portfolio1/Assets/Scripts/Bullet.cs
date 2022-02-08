@@ -14,7 +14,8 @@ public class Bullet : MonoBehaviour
         //rb.velocity = new Vector3(rb.velocity.x * bulletVelocity, rb.velocity.y * bulletVelocity, rb.velocity.z * bulletVelocity);
         rb.AddForce(gameObject.transform.up * bulletVelocity * 100, ForceMode.Impulse);
         //rb.AddForce()
-        camera.transform.SetParent(gameObject.transform);
+        //camera.transform.SetParent(gameObject.transform);
+        Camera.main.transform.SetParent(gameObject.transform);
     }
 
     // Update is called once per frame
