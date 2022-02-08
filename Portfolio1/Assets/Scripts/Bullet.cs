@@ -6,13 +6,15 @@ public class Bullet : MonoBehaviour
 {
     Rigidbody rb;
     [SerializeField] float bulletVelocity = 745f; // average tank velocity
+    [SerializeField] Camera camera;
     // Start is called before the first frame update
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
         //rb.velocity = new Vector3(rb.velocity.x * bulletVelocity, rb.velocity.y * bulletVelocity, rb.velocity.z * bulletVelocity);
-        rb.AddForce(gameObject.transform.up * bulletVelocity * 100, ForceMode.Force);
+        rb.AddForce(gameObject.transform.up * bulletVelocity * 100, ForceMode.Impulse);
         //rb.AddForce()
+        camera.transform.SetParent(gameObject.transform);
     }
 
     // Update is called once per frame
@@ -23,7 +25,7 @@ public class Bullet : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
+        gameObject.transform.localScale = new Vector3(10, 10, 10);
     }
 
 
@@ -34,7 +36,7 @@ public class Bullet : MonoBehaviour
 
     IEnumerator TimerDestroy()
     {
-        yield return new WaitForSeconds(4.0f);        
+        yield return new WaitForSeconds(4.0f);  
         Object.Destroy(gameObject);
     }
 }
