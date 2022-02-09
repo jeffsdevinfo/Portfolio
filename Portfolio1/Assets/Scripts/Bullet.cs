@@ -16,6 +16,10 @@ public class Bullet : MonoBehaviour
         rb.AddForce(gameObject.transform.up * bulletVelocity * rb.mass, ForceMode.Impulse);
         //rb.AddForce()
         //camera.transform.SetParent(gameObject.transform);
+        
+        Camera.main.transform.localPosition = Vector3.zero;
+        Camera.main.transform.localPosition += new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 10, gameObject.transform.position.z);
+        Camera.main.transform.Rotate(Vector3.right, 90);
         Camera.main.transform.SetParent(gameObject.transform);
     }
 
@@ -33,8 +37,11 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Bullet Position = " + transform.position);
-        StartCoroutine(TimerDestroy());
+        if (collision.gameObject.tag == "Ground")
+        {
+            Debug.Log("Bullet Position = " + transform.position);
+            StartCoroutine(TimerDestroy());
+        }
     }
 
     IEnumerator TimerDestroy()
