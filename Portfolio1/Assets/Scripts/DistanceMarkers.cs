@@ -6,9 +6,9 @@ using TMPro;
 public class DistanceMarkers : MonoBehaviour
 {
     float rotationRadius;
-    int numberOfCircles = 80;
+    int numberOfCircles = 20;
     int numberOfVerticesPerCircle = 100;
-    float circleIncrementDistance = 100;
+    float circleIncrementDistance = 500;
 
     LineRenderer lr;
     [SerializeField] TMPro.TMP_Text textPrefab;

@@ -17,8 +17,8 @@ public class Aiming : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("The X angle of the bulletspacelocation = " + parent.transform.rotation.eulerAngles.x);
-        Debug.Log("The Y angle of the bulletspacelocation = " + parent.transform.rotation.eulerAngles.y);
+        //Debug.Log("The X angle of the bulletspacelocation = " + parent.transform.rotation.eulerAngles.x);
+        //Debug.Log("The Y angle of the bulletspacelocation = " + parent.transform.rotation.eulerAngles.y);
         Draw();    
     }
 
