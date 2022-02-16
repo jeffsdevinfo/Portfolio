@@ -51,7 +51,10 @@ public class Barrel : MonoBehaviour
     {
         Debug.Log("Fire Pressed");
         GameObject gm = Instantiate(BulletPrefab, BulletSpawnLocation.transform.position, BulletSpawnLocation.transform.rotation);
-        
+
+        Vector3 random = new Vector3(0, 0, 10);
+        GameObject gm2 = Instantiate(BulletPrefab, random, BulletSpawnLocation.transform.rotation);
+        int i = 0;
         //Rigidbody gmrb = gm.GetComponent<Rigidbody>();
         //gmrb.AddForce(gm.transform.up * 1200);
         //gmrb.velocity = gm.transform.up * 1200;

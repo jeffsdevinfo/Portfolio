@@ -5,7 +5,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     Rigidbody rb;
-    [SerializeField] float bulletVelocity = 745f; // average tank velocity given 1020 high, 470 low    
+    [SerializeField] float bulletVelocity = 745; // average tank velocity given 1020 high, 470 low    
     [SerializeField] GameObject tank;
     // Start is called before the first frame update
     void Start()
@@ -13,13 +13,15 @@ public class Bullet : MonoBehaviour
         Debug.Log("Float max range = " + float.MaxValue);
         rb = gameObject.GetComponent<Rigidbody>();
         //rb.velocity = new Vector3(rb.velocity.x * bulletVelocity, rb.velocity.y * bulletVelocity, rb.velocity.z * bulletVelocity);
-        rb.AddForce(gameObject.transform.up * bulletVelocity * rb.mass, ForceMode.Impulse);
+        rb.AddForce(gameObject.transform.up * bulletVelocity, ForceMode.Impulse);
+        //rb.velocity = gameObject.transform.up * bulletVelocity;
         //rb.AddForce()
         //camera.transform.SetParent(gameObject.transform);
-        
+
         Camera.main.transform.localPosition = Vector3.zero;
         Camera.main.transform.localPosition += new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 10, gameObject.transform.position.z);
-        Camera.main.transform.Rotate(Vector3.right, 90);
+        Camera.main.transform.rotation = Quaternion.AngleAxis(90, Vector3.right);
+        //Camera.main.transform.Rotate(Vector3.right, 90);
         Camera.main.transform.SetParent(gameObject.transform);
     }
 
