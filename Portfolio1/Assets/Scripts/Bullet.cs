@@ -39,6 +39,7 @@ public class Bullet : MonoBehaviour
     {
         if (collision.gameObject.tag == "Ground")
         {
+            rb.velocity = Vector3.zero;
             Debug.Log("Bullet Position = " + transform.position);
             StartCoroutine(TimerDestroy());
         }

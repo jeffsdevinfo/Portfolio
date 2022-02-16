@@ -8,6 +8,9 @@ public class Aiming : MonoBehaviour
     [SerializeField] GameObject parent;
     [SerializeField] float InitialVelocity;
     [SerializeField] float Acceleration;
+
+    bool bDrawShotActive = true;
+    LineRenderer lr;    
     // Start is called before the first frame update
     void Start()
     {
@@ -19,7 +22,18 @@ public class Aiming : MonoBehaviour
     {
         //Debug.Log("The X angle of the bulletspacelocation = " + parent.transform.rotation.eulerAngles.x);
         //Debug.Log("The Y angle of the bulletspacelocation = " + parent.transform.rotation.eulerAngles.y);
-        Draw();    
+        //if (Input.GetKeyDown(KeyCode.T))
+        {
+            bDrawShotActive = true;
+        }        
+    }
+
+    private void FixedUpdate()
+    {
+        if(bDrawShotActive)
+        {
+            Draw();
+        }
     }
 
     void Draw()
@@ -44,13 +58,22 @@ public class Aiming : MonoBehaviour
 
     void DrawProjectileLine()
     {
-        float V0 = InitialVelocity;
-        Vector3 P0, P1;
-        P0 = parent.transform.position;
-        float a = Acceleration;
-        float t = 0.0f;
-        float temp1 = 0.5f * a * t * t;
-        P1 = new Vector3(P0.x + (V0 * t) + temp1, P0.y + (V0 * t) + temp1, P0.z + (V0 * t) + temp1);
+        Vector3 startPoint = parent.transform.position;
+        Quaternion quat = parent.transform.rotation;
+
+        Vector3 forward = parent.transform.forward;
+
+
+        //float V0 = InitialVelocity;
+        //Vector3 P0, P1;
+        //P0 = parent.transform.position;
+        //float a = Acceleration;
+        //float t = 0.0f;
+        //float temp1 = 0.5f * a * t * t;
+        //P1 = new Vector3(P0.x + (V0 * t) + temp1, P0.y + (V0 * t) + temp1, P0.z + (V0 * t) + temp1);
+
+
+
 
     }
 }
