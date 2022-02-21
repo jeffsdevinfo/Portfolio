@@ -15,6 +15,7 @@ public class Aiming : MonoBehaviour
     void Start()
     {
         lineRenderer = parent.GetComponent<LineRenderer>();
+        DoSomething();
     }
 
     // Update is called once per frame
@@ -72,8 +73,33 @@ public class Aiming : MonoBehaviour
         //float temp1 = 0.5f * a * t * t;
         //P1 = new Vector3(P0.x + (V0 * t) + temp1, P0.y + (V0 * t) + temp1, P0.z + (V0 * t) + temp1);
 
+    }
 
+    void DoSomething()
+    {
+        float yVelocity = Bullet.BulletSpeed * Mathf.Cos(Barrel.BarrelAngle * (Mathf.PI / 180));
+        float xVelocity = Bullet.BulletSpeed * Mathf.Sin(Barrel.BarrelAngle * (Mathf.PI / 180));
 
+        float fallRateA = -4.9035f;
+        float tempYVelocityB = 4.25f;
+        float vertDisplacementC = 100.0f;
+
+        float QuadQuotientV1 = -1 * tempYVelocityB + Mathf.Sqrt(Mathf.Pow(tempYVelocityB, 2) - 4 * fallRateA * vertDisplacementC);
+        float QuadQuotientV2 = -1 * tempYVelocityB - Mathf.Sqrt(Mathf.Pow(tempYVelocityB, 2) - 4 * fallRateA * vertDisplacementC);
+        float QuadDivisor = 2 * fallRateA;
+
+        float QuadResultV1 = QuadQuotientV1 / QuadDivisor;
+        Debug.Log("Result = " + QuadResultV1);
+
+        float QuadResultV2 = QuadQuotientV2 / QuadDivisor;
+        Debug.Log("Result = " + QuadResultV2);
+
+        float QuadQuotientFinal = -1 * yVelocity - Mathf.Sqrt(Mathf.Pow(yVelocity, 2) - 4 * fallRateA * Barrel.BulletSpawnPosition.y);
+        float QuadResultFinal = QuadQuotientFinal / QuadDivisor;
+        Debug.Log("QuadResultFinal = " + QuadResultFinal);
+
+        float xPosition = xVelocity * QuadResultFinal;
+        Debug.Log("Xposition = " + xPosition);
 
     }
 }

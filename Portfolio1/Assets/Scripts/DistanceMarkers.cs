@@ -10,6 +10,8 @@ public class DistanceMarkers : MonoBehaviour
     int numberOfVerticesPerCircle = 100;
     float circleIncrementDistance = 500;
 
+    [SerializeField] GameObject MarkerContainer;
+
     LineRenderer lr;
     [SerializeField] TMPro.TMP_Text textPrefab;
     // Start is called before the first frame update
@@ -59,6 +61,7 @@ public class DistanceMarkers : MonoBehaviour
         Vector3 newPosition = new Vector3(position.x, position.y + 2, position.z);
         TMP_Text textInstance = Instantiate<TMP_Text>(textPrefab, newPosition, Quaternion.AngleAxis(90.0f, Vector3.right));
         textInstance.text = ((int)Mathf.RoundToInt(position.z)).ToString();
+        textInstance.transform.SetParent(MarkerContainer.transform);
     }
 
 
