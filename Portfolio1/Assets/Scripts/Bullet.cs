@@ -1,26 +1,41 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Bullet : MonoBehaviour
 {
     Rigidbody rb;
     [SerializeField] public float bulletVelocity = 745; // average tank velocity given 1020 high, 470 low
-    static public float BulletSpeed = 745;        
+    static public float BulletSpeed = 745;
+    [SerializeField] TMPro.TMP_Text timeOfFlightText;
+    bool bShouldExecute;
+    
     // Start is called before the first frame update
+
+    static float timerVal;
+    static bool start, stop, reset;
+
     void Start()
     {
         Debug.Log("Float max range = " + float.MaxValue);
         rb = gameObject.GetComponent<Rigidbody>();
         //rb.AddForce(gameObject.transform.up * bulletVelocity, ForceMode.Impulse);
-        rb.AddForce(PitchData.PitchTransform.transform.forward * bulletVelocity, ForceMode.Impulse);
 
-        Camera.main.transform.localPosition = Vector3.zero;
-        Camera.main.transform.localPosition += new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 10, gameObject.transform.position.z);
+        rb.AddForce(PitchData.PitchTransform.transform.forward * bulletVelocity, ForceMode.Impulse);
+        //rb.AddForce(PitchData.PitchTransform.transform.forward * bulletVelocity, ForceMode.VelocityChange);
+        DrawAiming();
+        Camera.main.transform.position = Vector3.zero;
+
+        Camera.main.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 10, gameObject.transform.position.z);
         Camera.main.transform.rotation = Quaternion.AngleAxis(90, Vector3.right);
         //Camera.main.transform.Rotate(Vector3.right, 90);
         Camera.main.transform.SetParent(gameObject.transform);
         BulletSpeed = bulletVelocity;
+        timeOfFlightText.text = "0.0";
+
+        ResetTimer();
+        bShouldExecute = true;
 
     }
 
@@ -30,9 +45,21 @@ public class Bullet : MonoBehaviour
         
     }
 
+    void ResetTimer()
+    {
+        start = true;        
+        timerVal = 0;
+    }
+
     private void FixedUpdate()
     {
         //gameObject.transform.localScale = new Vector3(10, 10, 10);
+        if(start && bShouldExecute)
+        {
+            timerVal += Time.fixedDeltaTime;
+            double d = System.Math.Round(timerVal, 2);
+            timeOfFlightText.text = d.ToString();
+        }
     }
 
 
@@ -44,6 +71,8 @@ public class Bullet : MonoBehaviour
             Debug.Log("Bullet Position = " + transform.position);
             //StartCoroutine(TimerDestroy());
             rb.velocity = Vector3.zero;
+            start = false;
+            bShouldExecute = false;
         }
     }
 
@@ -51,6 +80,32 @@ public class Bullet : MonoBehaviour
     {
         yield return new WaitForSeconds(4.0f);
         transform.DetachChildren();
+        Camera.main.transform.parent = null;
         Destroy(gameObject);
+    }
+
+
+    public void DrawAiming()
+    {
+        float xAngle = 360.0f - PitchData.PitchTransform.transform.rotation.eulerAngles.x;
+        float yAngle = 360.0f - PitchData.PitchTransform.transform.rotation.eulerAngles.y;
+
+        float mass = gameObject.GetComponent<Rigidbody>().mass;
+        float mag = gameObject.GetComponent<Rigidbody>().velocity.magnitude;
+
+        float yVelocity = (Bullet.BulletSpeed / mass) * Mathf.Cos(xAngle * (Mathf.PI / 180));
+        float xVelocity = (Bullet.BulletSpeed / mass) * Mathf.Sin(xAngle * (Mathf.PI / 180));
+
+        float fallRateA = -4.9035f;
+        float vertDisplacementC = PitchData.PitchTransform.position.y;
+        float QuadDivisor = 2 * fallRateA;
+
+        float QuadQuotientFinal = -1 * yVelocity - Mathf.Sqrt(Mathf.Pow(yVelocity, 2) - 4 * fallRateA * Barrel.BulletSpawnPosition.y);
+        float QuadResultFinal = QuadQuotientFinal / QuadDivisor;
+        Debug.Log("QuadResultFinal = " + QuadResultFinal);
+
+        float xPosition = xVelocity * QuadResultFinal;
+        Debug.Log("Xposition = " + xPosition);
+
     }
 }
