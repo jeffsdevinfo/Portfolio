@@ -23,11 +23,11 @@ public class TestFire : MonoBehaviour
     {
         Debug.Log("Fire Pressed");
 
-        Rigidbody rb = PrefabToFire.GetComponent<Rigidbody>();
-        rb.mass = rb.mass + 1;
-        firedBullet = Instantiate(PrefabToFire, PitchData.PitchTransform.position, Quaternion.identity);
+        Rigidbody rb = PrefabToFire.GetComponent<Rigidbody>();        
+        firedBullet = Instantiate(PrefabToFire, PitchData.PitchTransform.position, Quaternion.identity);        
         firedBullet.SetActive(true);
         Bullet.BulletSpeed = firedBullet.GetComponent<Bullet>().bulletVelocity;
+        rb.mass = rb.mass + 1;
         //DrawAiming();
     }
 
@@ -43,12 +43,12 @@ public class TestFire : MonoBehaviour
         float vertDisplacementC = PitchData.PitchTransform.position.y;
         float QuadDivisor = 2 * fallRateA;
 
-
-        float yVelocity = (Bullet.BulletSpeed / mass) * Mathf.Cos(xAngle * (Mathf.PI / 180));
+        float yVelocity = (Bullet.BulletSpeed / mass) * Mathf.Sin(xAngle * (Mathf.PI / 180));
+        
         for (int i = 0; i < 100; i++)
-        {
-            
-            float QuadQuotientFinal = -1 * yVelocity - Mathf.Sqrt(Mathf.Pow(yVelocity, 2) - 4 * fallRateA * Barrel.BulletSpawnPosition.y);
+        {                        
+            //need to calculate the point along the trajectory here            
+
         }
     }
 

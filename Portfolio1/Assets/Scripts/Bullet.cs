@@ -93,8 +93,8 @@ public class Bullet : MonoBehaviour
         float mass = gameObject.GetComponent<Rigidbody>().mass;
         float mag = gameObject.GetComponent<Rigidbody>().velocity.magnitude;
 
-        float yVelocity = (Bullet.BulletSpeed / mass) * Mathf.Cos(xAngle * (Mathf.PI / 180));
-        float xVelocity = (Bullet.BulletSpeed / mass) * Mathf.Sin(xAngle * (Mathf.PI / 180));
+        float yVelocity = (Bullet.BulletSpeed / mass) * Mathf.Sin(xAngle * (Mathf.PI / 180));
+        float xVelocity = (Bullet.BulletSpeed / mass) * Mathf.Cos(xAngle * (Mathf.PI / 180));
 
         float fallRateA = -4.9035f;
         float vertDisplacementC = PitchData.PitchTransform.position.y;
