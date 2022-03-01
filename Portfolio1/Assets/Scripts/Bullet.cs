@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 public class Bullet : MonoBehaviour
 {
@@ -87,24 +88,44 @@ public class Bullet : MonoBehaviour
 
     public void DrawAiming()
     {
-        float xAngle = 360.0f - PitchData.PitchTransform.transform.rotation.eulerAngles.x;
-        float yAngle = 360.0f - PitchData.PitchTransform.transform.rotation.eulerAngles.y;
+        //float xAngle = 360.0f - PitchData.PitchTransform.transform.rotation.eulerAngles.x;
+        //float yAngle = 360.0f - PitchData.PitchTransform.transform.rotation.eulerAngles.y;
 
-        float mass = gameObject.GetComponent<Rigidbody>().mass;
-        float mag = gameObject.GetComponent<Rigidbody>().velocity.magnitude;
+        //float mass = gameObject.GetComponent<Rigidbody>().mass;
+        //float mag = gameObject.GetComponent<Rigidbody>().velocity.magnitude;
 
-        float yVelocity = (Bullet.BulletSpeed / mass) * Mathf.Sin(xAngle * (Mathf.PI / 180));
-        float xVelocity = (Bullet.BulletSpeed / mass) * Mathf.Cos(xAngle * (Mathf.PI / 180));
+        //float yVelocity = (Bullet.BulletSpeed / mass) * Mathf.Sin(xAngle * (Mathf.PI / 180));
+        //float xVelocity = (Bullet.BulletSpeed / mass) * Mathf.Cos(xAngle * (Mathf.PI / 180));
 
-        float fallRateA = -4.9035f;
-        float vertDisplacementC = PitchData.PitchTransform.position.y;
-        float QuadDivisor = 2 * fallRateA;
+        //float fallRateA = -4.9035f;
+        //float vertDisplacementC = TestFire.BulletSpawnPosition.y;//PitchData.PitchTransform.position.y;
+        //float QuadDivisor = 2 * fallRateA;
 
-        float QuadQuotientFinal = -1 * yVelocity - Mathf.Sqrt(Mathf.Pow(yVelocity, 2) - 4 * fallRateA * Barrel.BulletSpawnPosition.y);
-        float QuadResultFinal = QuadQuotientFinal / QuadDivisor;
+        //float QuadQuotientFinal = -1 * yVelocity - Mathf.Sqrt(Mathf.Pow(yVelocity, 2) - 4 * fallRateA * vertDisplacementC);//Barrel.BulletSpawnPosition.y);
+        //float QuadResultFinal = QuadQuotientFinal / QuadDivisor;
+        //Debug.Log("QuadResultFinal = " + QuadResultFinal);
+
+        //float xPosition = xVelocity * QuadResultFinal;
+        //Debug.Log("Xposition = " + xPosition);
+
+        double xAngle = 360.0 - PitchData.PitchTransform.transform.rotation.eulerAngles.x;
+        double yAngle = 360.0 - PitchData.PitchTransform.transform.rotation.eulerAngles.y;
+
+        double mass = gameObject.GetComponent<Rigidbody>().mass;
+        double mag = gameObject.GetComponent<Rigidbody>().velocity.magnitude;
+        
+        double yVelocity = (Bullet.BulletSpeed / mass) * Math.Sin(xAngle * (Math.PI / 180));
+        double xVelocity = (Bullet.BulletSpeed / mass) * Math.Cos(xAngle * (Math.PI / 180));
+
+        double fallRateA = -4.9035;
+        double vertDisplacementC = TestFire.BulletSpawnPosition.y;//PitchData.PitchTransform.position.y;
+        double QuadDivisor = 2 * fallRateA;
+
+        double QuadQuotientFinal = -1 * yVelocity - Math.Sqrt(Math.Pow(yVelocity, 2) - 4 * fallRateA * vertDisplacementC);//Barrel.BulletSpawnPosition.y);
+        double QuadResultFinal = QuadQuotientFinal / QuadDivisor;
         Debug.Log("QuadResultFinal = " + QuadResultFinal);
 
-        float xPosition = xVelocity * QuadResultFinal;
+        double xPosition = xVelocity * QuadResultFinal;
         Debug.Log("Xposition = " + xPosition);
 
     }

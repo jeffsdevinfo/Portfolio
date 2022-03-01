@@ -7,10 +7,13 @@ public class TestFire : MonoBehaviour
     [SerializeField] GameObject PrefabToFire;
     [SerializeField] LineRenderer lr;
     GameObject firedBullet;
+    int totalNumberOfVertices = 100;
+    static public Vector3 BulletSpawnPosition = Vector3.zero;
     // Start is called before the first frame update
     void Start()
     {
-        lr = gameObject.GetComponent<LineRenderer>();
+        BulletSpawnPosition = gameObject.transform.position;
+        //lr = gameObject.GetComponent<LineRenderer>();
     }
 
     // Update is called once per frame
@@ -44,10 +47,20 @@ public class TestFire : MonoBehaviour
         float QuadDivisor = 2 * fallRateA;
 
         float yVelocity = (Bullet.BulletSpeed / mass) * Mathf.Sin(xAngle * (Mathf.PI / 180));
+
         
+        lr.positionCount = totalNumberOfVertices;
+        Vector3 currentPosition = gameObject.transform.position;
+        int index = 0;
+        lr.SetPosition(index, currentPosition);
+        //for (int i = 0; i < numberOfCircles; i++)
+        //{
+        //    DrawNextLineWithIndex(ref circleIndex, ref currentPosition);
+        //}
         for (int i = 0; i < 100; i++)
         {                        
-            //need to calculate the point along the trajectory here            
+            //need to calculate the point along the trajectory here
+            
 
         }
     }

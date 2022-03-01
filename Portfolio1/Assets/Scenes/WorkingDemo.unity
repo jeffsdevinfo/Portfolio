@@ -1117,6 +1117,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ball
       objectReference: {fileID: 0}
+    - target: {fileID: 6769820279785098167, guid: 1e089f5ad860ca546916018a15c4ad25, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6834876419800165734, guid: 1e089f5ad860ca546916018a15c4ad25, type: 3}
       propertyPath: timeOfFlightText
       value: 
