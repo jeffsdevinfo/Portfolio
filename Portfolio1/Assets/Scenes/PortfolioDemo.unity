@@ -2334,15 +2334,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88c8a5e65095ea846b1b44cff7029d95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Barrel: {fileID: 1636682242}
-  BulletPrefab: {fileID: 201092434212255125, guid: a733bcc2c3cd467469e8c222681c46ca, type: 3}
-  projectileVectorObject: {fileID: 419398423}
+  AimPivot: {fileID: 1636682242}
+  ProjectilePrefab: {fileID: 201092434212255125, guid: a733bcc2c3cd467469e8c222681c46ca, type: 3}
   speed: 50
   mass: 1
   lr: {fileID: 1636682246}
   FinalPositionPrefab: {fileID: 3086378885242290879, guid: 18f528086690ebf4584d6b83aebfcc7e, type: 3}
-  redrawRate: 0.01
-  totalNumberOfVerticies: 985
+  ProjetileCurveRedrawRate: 0.01
+  ProjectileCurveVertices: 10
+  XRotationOffset: 90
+  YRotationOffset: 90
+  ZRotationOffset: 0
+  OverrideGravity: 0
+  Gravity: -9.81
+  AimVector: {x: 0, y: 1, z: 0}
 --- !u!4 &1636682244
 Transform:
   m_ObjectHideFlags: 0
@@ -2350,7 +2355,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1636682242}
-  m_LocalRotation: {x: 0.3478358, y: 0, z: 0, w: 0.9375555}
+  m_LocalRotation: {x: 0.3788797, y: 0.12993628, z: -0.053821363, w: 0.91469663}
   m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2358,7 +2363,7 @@ Transform:
   - {fileID: 419398424}
   m_Father: {fileID: 0}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 40.71, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 45, y: 16.17, z: 0}
 --- !u!114 &1636682245
 MonoBehaviour:
   m_ObjectHideFlags: 0
