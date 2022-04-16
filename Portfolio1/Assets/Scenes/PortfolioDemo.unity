@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -756,7 +756,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
 --- !u!223 &268674520
 Canvas:
   m_ObjectHideFlags: 0
@@ -887,36 +886,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 362953108}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &419398423
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 419398424}
-  m_Layer: 0
-  m_Name: ProjectileProjectionVector
-  m_TagString: Untagged
-  m_Icon: {fileID: 2488908585195742037, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &419398424
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 419398423}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1636682244}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &483053152
 GameObject:
   m_ObjectHideFlags: 0
@@ -1647,7 +1616,6 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
-  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!4 &946125016
@@ -1807,7 +1775,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2336,11 +2304,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AimPivot: {fileID: 1636682242}
   ProjectilePrefab: {fileID: 201092434212255125, guid: a733bcc2c3cd467469e8c222681c46ca, type: 3}
+  FinalPositionPrefab: {fileID: 3086378885242290879, guid: 18f528086690ebf4584d6b83aebfcc7e, type: 3}
   speed: 50
   mass: 1
   lr: {fileID: 1636682246}
-  FinalPositionPrefab: {fileID: 3086378885242290879, guid: 18f528086690ebf4584d6b83aebfcc7e, type: 3}
-  ProjetileCurveRedrawRate: 0.01
   ProjectileCurveVertices: 10
   XRotationOffset: 90
   YRotationOffset: 90
@@ -2348,6 +2315,9 @@ MonoBehaviour:
   OverrideGravity: 0
   Gravity: -9.81
   AimVector: {x: 0, y: 1, z: 0}
+  m_XAxisRotation: 0.38
+  m_YAxisRotation: 0
+  timer_text: {fileID: 987367358}
 --- !u!4 &1636682244
 Transform:
   m_ObjectHideFlags: 0
@@ -2355,15 +2325,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1636682242}
-  m_LocalRotation: {x: 0.3788797, y: 0.12993628, z: -0.053821363, w: 0.91469663}
+  m_LocalRotation: {x: 0.52648264, y: 0.11910832, z: -0.07478894, w: 0.8384724}
   m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 169316865}
-  - {fileID: 419398424}
   m_Father: {fileID: 0}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 45, y: 16.17, z: 0}
+  m_LocalEulerAnglesHint: {x: 64.25, y: 16.17, z: 0}
 --- !u!114 &1636682245
 MonoBehaviour:
   m_ObjectHideFlags: 0

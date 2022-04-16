@@ -1,101 +1,175 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class AimManager : MonoBehaviour
 {
     [SerializeField] GameObject AimPivot;
     [SerializeField] GameObject ProjectilePrefab;
-    GameObject projectileVectorObject;
-    [SerializeField] float speed = 10;
-    [SerializeField] float mass = 1f;
-    [SerializeField] LineRenderer lr;
     [SerializeField] GameObject FinalPositionPrefab;
     GameObject FinalPositionMoveableGameObject;
-    [SerializeField, Range(.0001f, 1f)] float ProjetileCurveRedrawRate = .01f;
+    GameObject projectileVectorObject;
+    
+    [SerializeField] float speed = 10;
+    [SerializeField] float mass = 1f;
+    [SerializeField] LineRenderer lr;    
+    
+    //[SerializeField, Range(.0001f, 1f)] float ProjetileCurveRedrawRate = .01f;
     [SerializeField, Range(5,1000)] int ProjectileCurveVertices = 10;
+    
+    // Since we are using a cylinder to represent the barrel inside this demonstration, the default orientation is that the cylinder
+    //  is pointing upwards but the the forward is down the Z.  Our calcuations are based off the X Y axis, thus we set the 
+    //  XRotationOffset and YRotationOffset to both be 90 degrees (inside Unity editor) so that the calculation is based off XY.
     [SerializeField] float XRotationOffset = 0.0f;
     [SerializeField] float YRotationOffset = 0.0f;
     [SerializeField] float ZRotationOffset = 0.0f;
-    [SerializeField] bool OverrideGravity = false;
-    
+    [SerializeField] bool OverrideGravity = false;    
     [SerializeField] float Gravity = -9.81f;
 
     [SerializeField] Vector3 AimVector = Vector3.up;
 
     bool bCalculations = true;
-    // Start is called before the first frame update
+    
+    [SerializeField] float m_XAxisRotation;
+    [SerializeField] float m_YAxisRotation;
+
+    [SerializeField] TMPro.TMP_Text timer_text;
+
+    static bool BTimerActive = false;
+    float time = 0;
+    bool bRedrawFlag = false;
+
     void Start()
     {
+        //CacheAngles();
+        m_XAxisRotation = m_YAxisRotation = 0;
+        // Object used to show the final projected position
         FinalPositionMoveableGameObject = Instantiate(FinalPositionPrefab, AimPivot.transform.position, Quaternion.identity);
+
+        // Empty game object used for calculating vector projection
         GameObject newObject = new GameObject("ProjectileVectorGO");
         projectileVectorObject = Instantiate(newObject, AimPivot.transform, false);
         projectileVectorObject.transform.localPosition = AimVector;
+
+        // Should we bypass the Unity gravity and use the specified value in the Unity Editor?
         if (!OverrideGravity)
         {
             Gravity = Physics.gravity.y;
         }
-
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
         if (bCalculations)
         {
-            CalculateDistance(false);
-        }
+            // if bCalculation and any rotations have occurred to the aiming pivot recalculate and redraw the projectile curve
+            if (Mathf.Abs(AimPivot.transform.eulerAngles.x - m_XAxisRotation) + Mathf.Abs(AimPivot.transform.eulerAngles.y - m_YAxisRotation) > Mathf.Epsilon)
+            {
+                CalculateDistance(false);
+                CacheAngles();
+                bRedrawFlag = true;
+            }
+        }        
+    }
+
+    private void OnEnable()
+    {
+        Plane.OnBulletCollidedWithPlane += OnBulletCollidedWithPlane;
+    }
+
+    private void OnDisable()
+    {
+        Plane.OnBulletCollidedWithPlane -= OnBulletCollidedWithPlane;
+    }
+
+    void OnBulletCollidedWithPlane()
+    {
+        // stop timer when bullet collides with plane
+        BTimerActive = false;
+    }
+
+    void CacheAngles()
+    {
+        m_XAxisRotation = AimPivot.transform.eulerAngles.x;
+        m_YAxisRotation = AimPivot.transform.eulerAngles.y;
     }
 
     public void OnFire()
     {
+        // Call CalculateDistance and have it output the shot location since we are actually firing now
         CalculateDistance(true);
 
+        // Spawn a projectile at the AimPivot position
         GameObject bulletSpawned = Instantiate(ProjectilePrefab, AimPivot.transform.position, Quaternion.identity);
-
+        
         Rigidbody rb = bulletSpawned.GetComponent<Rigidbody>();
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rb.isKinematic = false;
         mass = rb.mass;
-        Vector3 directionNorm = new Vector3(projectileVectorObject.transform.position.x - AimPivot.transform.position.x,
+        Vector3 directionNorm = new Vector3(
+            projectileVectorObject.transform.position.x - AimPivot.transform.position.x,
             projectileVectorObject.transform.position.y - AimPivot.transform.position.y,
             projectileVectorObject.transform.position.z - AimPivot.transform.position.z).normalized;
-        directionNorm = directionNorm * speed;
-        rb.AddForce(directionNorm, ForceMode.Impulse);//ForceMode.VelocityChange);   
-        StartCoroutine(BypassCalculation());
-    }
+        Vector3 force = directionNorm * speed; // apply the speed to the direction to get the force
+        
+        // Apply the force to the bullet's rigidbody
+        rb.AddForce(force, ForceMode.Impulse);
 
-        float time = 0;
-    private void FixedUpdate()
-    {
-        time += Time.fixedDeltaTime;
-        if (time >= ProjetileCurveRedrawRate)
-        {
-            DrawProjectileCurve();
-            time = 0;
-        }
+        // Bypass the calculation update while the projectile is moving
+        StartCoroutine(BypassCalculation());
+        time = 0;                   // restart the shot timer
+        BTimerActive = true;        // set the timer to active
     }
 
     
+    private void FixedUpdate()
+    {
+        // if timer is active update timer text field with duration
+        if (BTimerActive)
+        {
+            time += Time.fixedDeltaTime;
+            timer_text.text = time.ToString() + " seconds";
+        }
+        
+        // if bRedrawFlag is true redraw the projectile curve
+        if (bRedrawFlag)
+        {
+            bRedrawFlag = false;
+            DrawProjectileCurve();
+            time = 0;
+        }
+
+        #region OldRedrawPatternDisabled
+        //if (time >= ProjetileCurveRedrawRate)
+        //{
+        //    // only draw 
+        //    if (bRedrawFlag)
+        //    {
+        //        bRedrawFlag = false;
+        //        DrawProjectileCurve();
+        //        time = 0;                
+        //    }
+        //}
+        #endregion OldRedrawPatternDisabled
+
+    }
+
+
     void DrawProjectileCurve()
     {
         lr.positionCount = ProjectileCurveVertices + 1;
         lr.SetPosition(0, AimPivot.transform.position);
+
         float timeStep = projectileFlightDuration / ProjectileCurveVertices;
         for (int i = 1; i <= ProjectileCurveVertices; i++)
         {
-            //calculate x position 
-            //calculate y position
-            //rotate when ready
-            float currentTimeStep = i * timeStep;
-            //float xPos = (speedWithMassAdjusted * Mathf.Cos(90.0f - Barrel.transform.rotation.eulerAngles.x)) * currentTimeStep;
-            float xPos = AimPivot.transform.position.x + xVelocity * currentTimeStep;
-            //float yPos = (speedWithMassAdjusted * Mathf.Sin(90.0f - Barrel.transform.rotation.eulerAngles.x)) * currentTimeStep - 0.5f * (-9.81f * Mathf.Pow(currentTimeStep, 2));
+            float currentTimeStep = i * timeStep;            
+            float xPos = AimPivot.transform.position.x + xVelocity * currentTimeStep;            
             float yPos = AimPivot.transform.position.y + yVelocity * currentTimeStep - .5f * (Mathf.Abs(Gravity) * Mathf.Pow(currentTimeStep, 2));
-            float zPos = AimPivot.transform.position.z + 0.0f;
+            float zPos = AimPivot.transform.position.z;
             Vector3 tempVec = new Vector3(xPos, yPos, zPos);
-            tempVec = Quaternion.Euler(new Vector3(0.0f, AimPivot.transform.rotation.eulerAngles.y - 90, 0.0f)) * tempVec;
-            //tempVec = Quaternion.Euler(new Vector3(AimPivot.transform.rotation.eulerAngles.z - XRotationOffset, AimPivot.transform.rotation.eulerAngles.y - YRotationOffset, -ZRotationOffset)) * tempVec;
+            tempVec = Quaternion.Euler(new Vector3(0.0f, AimPivot.transform.rotation.eulerAngles.y - 90, 0.0f)) * tempVec;            
             lr.SetPosition(i, tempVec);
         }
     }
@@ -103,37 +177,41 @@ public class AimManager : MonoBehaviour
     float yVelocity, xVelocity, speedWithMassAdjusted, projectileFlightDuration;
     void CalculateDistance(bool bOutput)
     {
+        // offset the speed with the mass
         speedWithMassAdjusted = speed / mass;
 
-        yVelocity = (90.0f - AimPivot.transform.rotation.eulerAngles.x);
-        yVelocity = yVelocity * (Mathf.PI / 180);
-        yVelocity = Mathf.Sin(yVelocity);
-        yVelocity = speedWithMassAdjusted * yVelocity;
+        // calcuate the Aim direction given 
+        float AimingAngleDegs = (XRotationOffset - AimPivot.transform.rotation.eulerAngles.x);
+        float AimingAngleRads = AimingAngleDegs * (Mathf.PI / 180); // convert to rads
+                
+        yVelocity = speedWithMassAdjusted * Mathf.Sin(AimingAngleRads); // get force in yAxis (vertical)
+        xVelocity = speedWithMassAdjusted * Mathf.Cos(AimingAngleRads); // get applied force in xAxis (horizontal)
 
-        xVelocity = (90.0f - AimPivot.transform.rotation.eulerAngles.x);
-        xVelocity = xVelocity * (Mathf.PI / 180);
-        xVelocity = Mathf.Cos(xVelocity);
-        xVelocity = speedWithMassAdjusted * xVelocity;
-
-        float fallRateA = Gravity / 2.0f;// -4.905f;
-
+        float fallRateA = Gravity / 2.0f;       
         float QuadDivisor = 2 * fallRateA;
-        float QuadQuotientFinal = -1 * yVelocity - Mathf.Sqrt(Mathf.Pow(yVelocity, 2) - 4 * fallRateA * AimPivot.transform.position.y);
-        projectileFlightDuration = QuadQuotientFinal / QuadDivisor;
+        // quadratic equation to calcuate time of flight
+        float QuadQuotient = -1 * yVelocity - Mathf.Sqrt(Mathf.Pow(yVelocity, 2) - 4 * fallRateA * AimPivot.transform.position.y);
+        projectileFlightDuration = QuadQuotient / QuadDivisor;
 
-
+        // apply flight time to xVelocity to get horizontal displacement
         float xPosition = xVelocity * projectileFlightDuration;
-        if (bOutput)
-        {
-            Debug.Log("Xposition = " + xPosition);
-            Debug.Log("QuadResultFinal = " + projectileFlightDuration);
-        }
 
-        Vector3 finalShotPosition = new Vector3(xPosition, 0.0f, 0.0f); // use 0.0f for y and z for now until rotation        
-        finalShotPosition = Quaternion.Euler(new Vector3(AimPivot.transform.rotation.eulerAngles.x - XRotationOffset, 
+        // rotate calculated horizontal displacement to AimPivot rotations
+        Vector3 finalShotPosition = new Vector3(xPosition, 0.0f, 0.0f);     
+        finalShotPosition = Quaternion.Euler(new Vector3(
+            AimPivot.transform.rotation.eulerAngles.x - XRotationOffset, 
             AimPivot.transform.rotation.eulerAngles.y - YRotationOffset, 
             AimPivot.transform.rotation.eulerAngles.z - ZRotationOffset)) * finalShotPosition;
+
+        // set FinalPositionMoveableGameObject to calculated and rotated position
         FinalPositionMoveableGameObject.transform.position = finalShotPosition;
+
+        // output the position during a fire operation
+        if (bOutput)
+        {
+            string tempOutput = "---" + "\nCalculated final shot position = " + finalShotPosition + "\nCalculated flight duration = " + projectileFlightDuration;            
+            Debug.Log(tempOutput);            
+        }
     }
 
     IEnumerator BypassCalculation()
