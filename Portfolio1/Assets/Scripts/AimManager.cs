@@ -1,3 +1,7 @@
+// Copyright (c) 2021 Jeff Simon
+// Distributed under the MIT/X11 software license, see the accompanying
+// file license.txt or http://www.opensource.org/licenses/mit-license.php.
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +16,9 @@ public class AimManager : MonoBehaviour
     GameObject projectileVectorObject;
     
     [SerializeField] float speed = 10;
+    float prevSpeed = 0.0f;
     [SerializeField] float mass = 1f;
+    float prevMass = 0.0f;
     [SerializeField] LineRenderer lr;    
     
     //[SerializeField, Range(.0001f, 1f)] float ProjetileCurveRedrawRate = .01f;
@@ -57,6 +63,7 @@ public class AimManager : MonoBehaviour
         {
             Gravity = Physics.gravity.y;
         }
+        mass = ProjectilePrefab.GetComponent<Rigidbody>().mass;
     }
     
     void Update()
@@ -64,10 +71,11 @@ public class AimManager : MonoBehaviour
         if (bCalculations)
         {
             // if bCalculation and any rotations have occurred to the aiming pivot recalculate and redraw the projectile curve
-            if (Mathf.Abs(AimPivot.transform.eulerAngles.x - m_XAxisRotation) + Mathf.Abs(AimPivot.transform.eulerAngles.y - m_YAxisRotation) > Mathf.Epsilon)
+            //if (Mathf.Abs(AimPivot.transform.eulerAngles.x - m_XAxisRotation) + Mathf.Abs(AimPivot.transform.eulerAngles.y - m_YAxisRotation) > Mathf.Epsilon)
+            if(CheckForVariableChanges())
             {
                 CalculateDistance(false);
-                CacheAngles();
+                CacheVariables();
                 bRedrawFlag = true;
             }
         }        
@@ -89,10 +97,30 @@ public class AimManager : MonoBehaviour
         BTimerActive = false;
     }
 
-    void CacheAngles()
+    bool CheckForVariableChanges()
+    {
+        if (Mathf.Abs(AimPivot.transform.eulerAngles.x - m_XAxisRotation) + Mathf.Abs(AimPivot.transform.eulerAngles.y - m_YAxisRotation) > Mathf.Epsilon)
+        {
+            return true;
+        }
+        if (mass != prevMass)
+        {
+            return true;
+        }
+        if (speed != prevSpeed)
+        {
+            return true;
+        }
+        return false;
+    }
+
+
+    void CacheVariables()
     {
         m_XAxisRotation = AimPivot.transform.eulerAngles.x;
         m_YAxisRotation = AimPivot.transform.eulerAngles.y;
+        prevSpeed = speed;
+        prevMass = mass;        
     }
 
     public void OnFire()
@@ -158,17 +186,22 @@ public class AimManager : MonoBehaviour
 
     void DrawProjectileCurve()
     {
+        // setup line renderer
         lr.positionCount = ProjectileCurveVertices + 1;
         lr.SetPosition(0, AimPivot.transform.position);
 
+        // divide the time of flight by the amount of verticies in the projectile curve
         float timeStep = projectileFlightDuration / ProjectileCurveVertices;
         for (int i = 1; i <= ProjectileCurveVertices; i++)
         {
+            // calcuate each step along the curve for the set amount of points
             float currentTimeStep = i * timeStep;            
             float xPos = AimPivot.transform.position.x + xVelocity * currentTimeStep;            
             float yPos = AimPivot.transform.position.y + yVelocity * currentTimeStep - .5f * (Mathf.Abs(Gravity) * Mathf.Pow(currentTimeStep, 2));
             float zPos = AimPivot.transform.position.z;
             Vector3 tempVec = new Vector3(xPos, yPos, zPos);
+            
+            // rotate the XY calculated point by the current Aim pivot rotations
             tempVec = Quaternion.Euler(new Vector3(0.0f, AimPivot.transform.rotation.eulerAngles.y - 90, 0.0f)) * tempVec;            
             lr.SetPosition(i, tempVec);
         }
@@ -197,6 +230,9 @@ public class AimManager : MonoBehaviour
         float xPosition = xVelocity * projectileFlightDuration;
 
         // rotate calculated horizontal displacement to AimPivot rotations
+
+        float xFinalAngle = AimPivot.transform.rotation.eulerAngles.x - XRotationOffset;
+        float yFinalAngle = AimPivot.transform.rotation.eulerAngles.y - YRotationOffset;
         Vector3 finalShotPosition = new Vector3(xPosition, 0.0f, 0.0f);     
         finalShotPosition = Quaternion.Euler(new Vector3(
             AimPivot.transform.rotation.eulerAngles.x - XRotationOffset, 

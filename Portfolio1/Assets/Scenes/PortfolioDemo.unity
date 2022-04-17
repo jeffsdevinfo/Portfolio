@@ -2305,8 +2305,8 @@ MonoBehaviour:
   AimPivot: {fileID: 1636682242}
   ProjectilePrefab: {fileID: 201092434212255125, guid: a733bcc2c3cd467469e8c222681c46ca, type: 3}
   FinalPositionPrefab: {fileID: 3086378885242290879, guid: 18f528086690ebf4584d6b83aebfcc7e, type: 3}
-  speed: 50
-  mass: 1
+  speed: 1680
+  mass: 7.9
   lr: {fileID: 1636682246}
   ProjectileCurveVertices: 10
   XRotationOffset: 90
