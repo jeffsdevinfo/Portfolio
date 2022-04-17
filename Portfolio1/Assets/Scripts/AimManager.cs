@@ -1,4 +1,4 @@
-// Copyright (c) 2021 Jeff Simon
+// Copyright (c) 2022 Jeff Simon
 // Distributed under the MIT/X11 software license, see the accompanying
 // file license.txt or http://www.opensource.org/licenses/mit-license.php.
 
@@ -213,7 +213,7 @@ public class AimManager : MonoBehaviour
         // offset the speed with the mass
         speedWithMassAdjusted = speed / mass;
 
-        // calcuate the Aim direction given 
+        // calcuate the Aim direction 
         float AimingAngleDegs = (XRotationOffset - AimPivot.transform.rotation.eulerAngles.x);
         float AimingAngleRads = AimingAngleDegs * (Mathf.PI / 180); // convert to rads
                 
