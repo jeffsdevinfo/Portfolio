@@ -201,8 +201,8 @@ public class AimManager : MonoBehaviour
             float zPos = AimPivot.transform.position.z;
             Vector3 tempVec = new Vector3(xPos, yPos, zPos);
             
-            // rotate the XY calculated point by the current Aim pivot rotations
-            tempVec = Quaternion.Euler(new Vector3(0.0f, AimPivot.transform.rotation.eulerAngles.y - 90, 0.0f)) * tempVec;            
+            // rotate the point
+            tempVec = Quaternion.Euler(new Vector3(0.0f, AimPivot.transform.rotation.eulerAngles.y - YRotationOffset, 0.0f)) * tempVec;            
             lr.SetPosition(i, tempVec);
         }
     }
