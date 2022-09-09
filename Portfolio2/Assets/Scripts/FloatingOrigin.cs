@@ -13,7 +13,7 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Camera))]
 public class FloatingOrigin : MonoBehaviour
 {
-    public float threshold = 100.0f;
+    public float threshold = 128.0f; //256/2 + 256
     //public LevelLayoutGenerator layoutGenerator;
 
     void LateUpdate()

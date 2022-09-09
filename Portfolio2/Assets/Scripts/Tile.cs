@@ -5,15 +5,9 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
     public int gameTileIndex;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    public void UnloadTile()
     {
-        
+        Destroy(gameObject);
     }
 }
