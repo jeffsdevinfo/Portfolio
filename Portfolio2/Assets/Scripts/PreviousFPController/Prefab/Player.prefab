@@ -165,10 +165,10 @@ GameObject:
   m_Component:
   - component: {fileID: 7366756549788273886}
   - component: {fileID: 7366756549788273887}
-  - component: {fileID: 5246684462081787022}
   - component: {fileID: 4994958252548771085}
   - component: {fileID: 961393027}
   - component: {fileID: 9064956811920337284}
+  - component: {fileID: 1444696567330318689}
   m_Layer: 15
   m_Name: Player
   m_TagString: Untagged
@@ -288,33 +288,6 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &5246684462081787022
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7366756549788273875}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 148641e469a8e554d9a97b2529a7be73, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CameraPosition: {fileID: 5230441636971015392}
-  CameraPitchInverted: 0
-  cursorLockMode: 0
-  StartMotionPauseDuration: 2
-  rotationSpeed: 30.1
-  yRotationLimit: 88
-  moveSpeed: 20
-  dashSpeed: 6
-  dashDuration: 0
-  additionalSpeedModifiers: 0
-  jumpModifier: 0
-  jumpingActive: 0
-  StartSceneCurrentScene: 0
-  groundColliderRef: {fileID: 7726470714265537524}
-  Grounded: 0
 --- !u!65 &4994958252548771085
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -362,6 +335,33 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1444696567330318689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7366756549788273875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86d086b425a7f984a9587c686bb7e609, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CameraPosition: {fileID: 5230441636971015392}
+  CameraPitchInverted: 0
+  cursorLockMode: 0
+  StartMotionPauseDuration: 2
+  rotationSpeed: 1
+  yRotationLimit: 88
+  moveSpeed: 1000
+  dashSpeed: 6
+  dashDuration: 0
+  additionalSpeedModifiers: 0
+  jumpModifier: 0
+  jumpingActive: 0
+  StartSceneCurrentScene: 0
+  groundColliderRef: {fileID: 7726470714265537524}
+  Grounded: 0
 --- !u!1 &7366756550166506328
 GameObject:
   m_ObjectHideFlags: 0

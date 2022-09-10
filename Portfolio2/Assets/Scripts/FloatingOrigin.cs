@@ -55,6 +55,7 @@ public class FloatingOrigin : MonoBehaviour
 {
     public float threshold = 100.0f;
     public float physicsThreshold = 1000.0f; // Set to zero to disable
+    public WorldManager worldManager;    
 
 #if OLD_PHYSICS
     public float defaultSleepVelocity = 0.14f;
@@ -69,17 +70,23 @@ public class FloatingOrigin : MonoBehaviour
     {
         Vector3 cameraPosition = gameObject.transform.position;
         cameraPosition.y = 0f;
-        if (cameraPosition.magnitude > threshold)
+        //if (cameraPosition.magnitude > threshold)
+        int index = worldManager.WhatTileAmIIn();
+        if (index != 0)
         {
             Object[] objects = FindObjectsOfType(typeof(Transform));
             foreach (Object o in objects)
-            {
+            {                
                 Transform t = (Transform)o;
-                if (t.parent == null)
+                if (t.gameObject.layer != 7)
                 {
-                    t.position -= cameraPosition;
+                    if (t.parent == null)
+                    {
+                        t.position -= cameraPosition;
+                    }
                 }
             }
+            worldManager.UpdateTiles(index);
 
 #if SUPPORT_OLD_PARTICLE_SYSTEM
             // move active particles from old Unity particle system that are active in world space
@@ -141,33 +148,33 @@ public class FloatingOrigin : MonoBehaviour
             //        sys.Play();
             //}
 
-            if (physicsThreshold > 0f)
-            {
-                float physicsThreshold2 = physicsThreshold * physicsThreshold; // simplify check on threshold
-                objects = FindObjectsOfType(typeof(Rigidbody));
-                foreach (UnityEngine.Object o in objects)
-                {
-                    Rigidbody r = (Rigidbody)o;
-                    if (r.gameObject.transform.position.sqrMagnitude > physicsThreshold2)
-                    {
-#if OLD_PHYSICS
-                        r.sleepAngularVelocity = float.MaxValue;
-                        r.sleepVelocity = float.MaxValue;
-#else
-                        r.sleepThreshold = float.MaxValue;
-#endif
-                    }
-                    else
-                    {
-#if OLD_PHYSICS
-                        r.sleepAngularVelocity = defaultSleepVelocity;
-                        r.sleepVelocity = defaultAngularVelocity;
-#else
-                        r.sleepThreshold = defaultSleepThreshold;
-#endif
-                    }
-                }
-            }
+            //            if (physicsThreshold > 0f)
+            //            {
+            //                float physicsThreshold2 = physicsThreshold * physicsThreshold; // simplify check on threshold
+            //                objects = FindObjectsOfType(typeof(Rigidbody));
+            //                foreach (UnityEngine.Object o in objects)
+            //                {
+            //                    Rigidbody r = (Rigidbody)o;
+            //                    if (r.gameObject.transform.position.sqrMagnitude > physicsThreshold2)
+            //                    {
+            //#if OLD_PHYSICS
+            //                        r.sleepAngularVelocity = float.MaxValue;
+            //                        r.sleepVelocity = float.MaxValue;
+            //#else
+            //                        r.sleepThreshold = float.MaxValue;
+            //#endif
+            //                    }
+            //                    else
+            //                    {
+            //#if OLD_PHYSICS
+            //                        r.sleepAngularVelocity = defaultSleepVelocity;
+            //                        r.sleepVelocity = defaultAngularVelocity;
+            //#else
+            //                        r.sleepThreshold = defaultSleepThreshold;
+            //#endif
+            //                    }
+            //                }
+            //            }
         }
     }
 }

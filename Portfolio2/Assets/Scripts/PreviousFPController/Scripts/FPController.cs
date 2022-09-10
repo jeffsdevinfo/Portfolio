@@ -11,7 +11,7 @@ using UnityEngine.InputSystem.HID;
 /// FPController - class to handle a first person controller (head camera and body translation)
 /// </summary>
 [RequireComponent(typeof(Rigidbody))]
-public class Character : MonoBehaviour
+public class FPController : MonoBehaviour
 {
     [Header("Camera Values")]
     [SerializeField] GameObject CameraPosition;
@@ -42,16 +42,6 @@ public class Character : MonoBehaviour
     private Rigidbody rb;
     private Vector3 direction = Vector3.zero;
     private Vector3 moveVel = Vector3.zero;
-
-    //[Header("Gun")]
-    //[SerializeField] GameObject arms;
-    //Gun gun;
-
-    //HUD hud;
-    //PauseScreen pause;
-
-    //[SerializeField] HealthDamageScaler damage;
-    //[SerializeField] HealthDamageScaler healthScaler;
 
     //Player location
     static public Vector3 FPLocation;
@@ -112,11 +102,6 @@ public class Character : MonoBehaviour
         if (bMovementActive)
         {
             inputValues = value.Get<Vector2>();
-            /*inputValues *= .5f;
-            inputValues *= .1f;
-            inputValues = inputValues * rotationSpeed * Time.deltaTime;
-            calculatedCamRotation += new Vector2(inputValues.x, inputValues.y);
-            OrientCamera();*/
         }
     }
 
@@ -157,9 +142,10 @@ public class Character : MonoBehaviour
     {
         if (bMovementActive)
         {
+            OrientCamera();
             GroundTriggerCheck(); //update the ground trigger
             mainCamera.transform.position = CameraPosition.transform.position;
-            if (inputValues.magnitude > 0) OrientCamera();
+            //if (inputValues.magnitude > 0) OrientCamera();
         }
         else
         {
@@ -168,31 +154,6 @@ public class Character : MonoBehaviour
         //LookForInteractableObjects();
         //FPController.FPLocation = gameObject.transform.position;
     }
-
-    //void LookForInteractableObjects()
-    //{
-    //    if (Physics.Raycast(Camera.main.transform.position + Camera.main.transform.forward, Camera.main.transform.forward, out RaycastHit fireHit, 2))
-    //    {
-    //        if (fireHit.collider.TryGetComponent<Interactable>(out Interactable obj))
-    //        {
-    //            lookingAt = obj;
-    //            lookingAt.Highlight();
-    //            hud.UpdateDisplayText(lookingAt.GetDisplayText());
-    //        }
-    //        else if (lookingAt != null)
-    //        {
-    //            lookingAt.UnHighlight();
-    //            hud.UpdateDisplayText("");
-    //            lookingAt = null;
-    //        }
-    //    }
-    //    else if (lookingAt != null)
-    //    {
-    //        lookingAt.UnHighlight();
-    //        hud.UpdateDisplayText("");
-    //        lookingAt = null;
-    //    }
-    //}
 
     /// <summary>
     /// FixedUpdate - Moves object if bMovementActive
@@ -238,7 +199,7 @@ public class Character : MonoBehaviour
             else
             {
                 // if not on ground apply an arbitrary negative y to velocity to force back to ground
-                rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y + -5, rb.velocity.z);
+                //rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y + -5, rb.velocity.z);
             }
         }
     }
@@ -279,52 +240,10 @@ public class Character : MonoBehaviour
         }
     }
 
-    //private void OnBash(InputValue value)
-    //{
-    //    gun.Bash();
-    //}
-
-    //private void OnShoot(InputValue value)
-    //{
-    //    if (gun != null && arms.gameObject.activeSelf)
-    //    {
-    //        if (value.Get<float>() > 0) gun.Shoot();
-    //        else gun.StopShooting();
-    //    }
-    //}
-
-    //private void OnCharge(InputValue value)
-    //{
-    //    if (gun != null && arms.gameObject.activeSelf)
-    //    {
-    //        if (value.Get<float>() > 0) gun.Charge();
-    //        else gun.StopCharging();
-    //    }
-    //}
-
     private void OnDash(InputValue value)
     {
         Dash();
     }
-
-    //private void OnInteract(InputValue value)
-    //{
-    //    if (lookingAt != null)
-    //    {
-    //        if (!arms.gameObject.activeSelf && lookingAt.GetComponent<PickupGun>()) arms.gameObject.SetActive(true);
-    //        gun.Interact(lookingAt);
-    //    }
-    //}
-
-    //private void OnPause(InputValue value)
-    //{
-    //    if (!pause.paused)
-    //    {
-    //        pause.gameObject.SetActive(true);
-    //        pause.Pause();
-    //    }
-    //    else pause.Resume();
-    //}
 
     /// <summary>
     /// Adds a move speed boost for a short time
@@ -332,34 +251,6 @@ public class Character : MonoBehaviour
     void Dash()
     {
         moveSpeedBoost = dashSpeed;
-        //AudioManager.instance.Stop("PlayerMovement");
-        //AudioManager.instance.Play("PlayerDash");
-        //await Task.Delay((int)(dashDuration * 1000));
-        //AudioManager.instance.Play("PlayerMovement");
         moveSpeedBoost = 0;
     }
-
-    //protected override void Die()
-    //{
-    //    AudioManager.instance.StopAll();
-    //    LoadSceneAsync.instance.LoadScene(7);
-    //}
-
-    //public void UpdateHealth(float amount)
-    //{
-    //    maxHealth = healthScaler.scaler += amount;
-    //    TakeDamage(-amount);
-    //}
-
-    //public void UpdateDamage(float amount)
-    //{
-    //    damage.scaler += amount;
-    //}
-
-    //overrides for Damagable
-    //public override void EnableNavAgent() { }
-
-    //public override void DisableNavAgent() { }
-
-    //public override IEnumerator WaitForVelocityToDissipate() { yield return null; }
 }

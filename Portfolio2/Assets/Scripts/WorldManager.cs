@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using V2 = UnityEngine.Vector2;
 
@@ -11,7 +12,7 @@ public class WorldManager : MonoBehaviour
     [SerializeField] List<GameObject> TileDefaultPositions = new List<GameObject>();
 
     List<int[]> TileMoveLookup = new List<int[]>();
-    List<Vector2[]> TileRegions = new List<Vector2[]>();
+    //List<Vector2[]> TileRegions = new List<Vector2[]>();
     List<int[]> TilesToDelete = new List<int[]>();
     
     [SerializeField] GameObject TilePrefab;
@@ -31,42 +32,42 @@ public class WorldManager : MonoBehaviour
          * 20   19  18  17  16
          */
         #region previousTable
-        ////                                N    NE  E   SE  S   SW  W   NW          tiles To load / unload
-        TileMoveLookup.Insert(0,new int[] { 1,   2,  3,  4,  5,  6,  7,  8  }); //0                           
-        TileMoveLookup.Insert(1,new int[] { 10,  11, 2,  3,  0,  7,  8,  9  }); //1
-        TileMoveLookup.Insert(2,new int[] { 11,  12, 13, 14, 3,  0,  1,  10 }); //2
-        TileMoveLookup.Insert(3,new int[] { 2,   13, 14, 15, 4,  5,  0,  1  }); //3
-        TileMoveLookup.Insert(4,new int[] { 3,   14, 15, 16, 17, 18, 5,  0  }); //4
-        TileMoveLookup.Insert(5,new int[] { 0,   3,  4,  17, 18, 19, 6,  7  }); //5
-        TileMoveLookup.Insert(6,new int[] { 7,   0,  5,  18, 19, 20, 21, 22 }); //6
-        TileMoveLookup.Insert(7,new int[] { 8,   1,  0,  5,  6,  21, 22, 23 }); //7
-        TileMoveLookup.Insert(8,new int[] { 9,   10, 1,  0,  7,  22, 23, 24 }); //8
-        TileMoveLookup.Insert(9,new int[] { -1,  -1, 10, 1,  8,  23, 24, -1  }); //9
-        TileMoveLookup.Insert(10,new int[] { -1,  -1, 11, 2,  1,  8,  9,  -1  }); //10
-        TileMoveLookup.Insert(11,new int[] { -1,  -1, 12, 13, 2,  1,  10, -1  }); //11
-        TileMoveLookup.Insert(12,new int[] { -1,  -1, -1, -1, 13, 2,  11, -1  }); //12
-        TileMoveLookup.Insert(13,new int[] { 12,  -1, -1, -1, 14, 3,  2,  11  }); //13
-        TileMoveLookup.Insert(14,new int[] { 13,  -1, -1, -1, 15, 4,  3,  2   }); //14
-        TileMoveLookup.Insert(15,new int[] { 14,  -1, -1, -1, 16, 17, 4,  3   }); //15
-        TileMoveLookup.Insert(16,new int[] { 15,  -1, -1, -1, -1, -1, 17, 4   }); //16
-        TileMoveLookup.Insert(17,new int[] { 4,   15, 16, -1, -1, -1, 18, 5   }); //17
-        TileMoveLookup.Insert(18,new int[] { 5,   4,  17, -1, -1, -1, 19, 6   }); //18
-        TileMoveLookup.Insert(19,new int[] { 6,   5,  18, -1, -1, -1, 20, 21  }); //19
-        TileMoveLookup.Insert(20,new int[] { 21,  6,  19, -1, -1, -1, -1, -1  }); //20
-        TileMoveLookup.Insert(21,new int[] { 22,  7,  6,  19, 20, -1, -1, -1  }); //21
-        TileMoveLookup.Insert(22,new int[] { 23,  8,  7,  6,  21, -1, -1, -1  }); //22
-        TileMoveLookup.Insert(23,new int[] { 24,  9,  8,  7,  22, -1, -1, -1  }); //23
-        TileMoveLookup.Insert(24,new int[] { -1, -1,  9,  8,  23, -1, -1, -1  }); //24
+        ////                                N    NE  E   SE  S   SW  W   NW        
+        TileMoveLookup.Insert(0, new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }); //0                           
+        TileMoveLookup.Insert(1, new int[] {0, 10, 11, 2, 3, 0, 7, 8, 9 }); //1
+        TileMoveLookup.Insert(2, new int[] {0, 11, 12, 13, 14, 3, 0, 1, 10 }); //2
+        TileMoveLookup.Insert(3, new int[] {0, 2, 13, 14, 15, 4, 5, 0, 1 }); //3
+        TileMoveLookup.Insert(4, new int[] {0, 3, 14, 15, 16, 17, 18, 5, 0 }); //4
+        TileMoveLookup.Insert(5, new int[] {0, 0, 3, 4, 17, 18, 19, 6, 7 }); //5
+        TileMoveLookup.Insert(6, new int[] {0, 7, 0, 5, 18, 19, 20, 21, 22 }); //6
+        TileMoveLookup.Insert(7, new int[] {0, 8, 1, 0, 5, 6, 21, 22, 23 }); //7
+        TileMoveLookup.Insert(8, new int[] {0, 9, 10, 1, 0, 7, 22, 23, 24 }); //8
+        TileMoveLookup.Insert(9, new int[] { 0, -1, -1, 10, 1, 8, 23, 24, -1 }); //9
+        TileMoveLookup.Insert(10, new int[] {0, -1, -1, 11, 2, 1, 8, 9, -1 }); //10
+        TileMoveLookup.Insert(11, new int[] {0, -1, -1, 12, 13, 2, 1, 10, -1 }); //11
+        TileMoveLookup.Insert(12, new int[] {0, -1, -1, -1, -1, 13, 2, 11, -1 }); //12
+        TileMoveLookup.Insert(13, new int[] {0, 12, -1, -1, -1, 14, 3, 2, 11 }); //13
+        TileMoveLookup.Insert(14, new int[] {0, 13, -1, -1, -1, 15, 4, 3, 2 }); //14
+        TileMoveLookup.Insert(15, new int[] {0, 14, -1, -1, -1, 16, 17, 4, 3 }); //15
+        TileMoveLookup.Insert(16, new int[] {0, 15, -1, -1, -1, -1, -1, 17, 4 }); //16
+        TileMoveLookup.Insert(17, new int[] {0, 4, 15, 16, -1, -1, -1, 18, 5 }); //17
+        TileMoveLookup.Insert(18, new int[] {0, 5, 4, 17, -1, -1, -1, 19, 6 }); //18
+        TileMoveLookup.Insert(19, new int[] {0, 6, 5, 18, -1, -1, -1, 20, 21 }); //19
+        TileMoveLookup.Insert(20, new int[] {0, 21, 6, 19, -1, -1, -1, -1, -1 }); //20
+        TileMoveLookup.Insert(21, new int[] {0, 22, 7, 6, 19, 20, -1, -1, -1 }); //21
+        TileMoveLookup.Insert(22, new int[] {0, 23, 8, 7, 6, 21, -1, -1, -1 }); //22
+        TileMoveLookup.Insert(23, new int[] {0, 24, 9, 8, 7, 22, -1, -1, -1 }); //23
+        TileMoveLookup.Insert(24, new int[] { 0, -1, -1, 9, 8, 23, -1, -1, -1 }); //24
 
         TilesToDelete.Insert(0, new int[] { }); //0 empty
-        TilesToDelete.Insert(1, new int[] { 16,17,18,19,20});
-        TilesToDelete.Insert(2, new int[] { 16,17,18,19,20,21,22,23,24 });
-        TilesToDelete.Insert(3, new int[] { 20,21,22,23,24});
-        TilesToDelete.Insert(4, new int[] { 9,10,11,12,20,21,22,23,24});
-        TilesToDelete.Insert(5, new int[] { 9,10,11,12,24});
-        TilesToDelete.Insert(6, new int[] { 9,10,11,12,13,14,15,16});
-        TilesToDelete.Insert(7, new int[] { 12,13,14,15,16});
-        TilesToDelete.Insert(8, new int[] { 12,13,14,15,16,17,18,19,20});        
+        TilesToDelete.Insert(1, new int[] { 16, 17, 18, 19, 20 });
+        TilesToDelete.Insert(2, new int[] { 16, 17, 18, 19, 20, 21, 22, 23, 24 });
+        TilesToDelete.Insert(3, new int[] { 20, 21, 22, 23, 24 });
+        TilesToDelete.Insert(4, new int[] { 9, 10, 11, 12, 20, 21, 22, 23, 24 });
+        TilesToDelete.Insert(5, new int[] { 9, 10, 11, 12, 24 });
+        TilesToDelete.Insert(6, new int[] { 9, 10, 11, 12, 13, 14, 15, 16 });
+        TilesToDelete.Insert(7, new int[] { 12, 13, 14, 15, 16 });
+        TilesToDelete.Insert(8, new int[] { 12, 13, 14, 15, 16, 17, 18, 19, 20 });
         #endregion previousTable
 
         #region newTable
@@ -98,98 +99,107 @@ public class WorldManager : MonoBehaviour
         //TileMoveLookup.Add(new int[] {  23, -1, -1, -1, -1, -1, 9,  8   }); //24
         #endregion newTable
 
-        float halfRegion = tileWidth / 2;
-        
-        // leftLower, rightLower, rightUpper, leftUpper
-        TileRegions.Add(new V2[] { new V2(-halfRegion, -halfRegion), new V2(halfRegion, -halfRegion), 
-                                    new V2(halfRegion, halfRegion), new V2(-halfRegion, halfRegion) });
-
-        TileRegions.Add(new V2[] { new V2(-halfRegion, halfRegion), new V2(halfRegion, halfRegion), 
-                                    new V2(halfRegion, halfRegion+tileWidth), new V2(-halfRegion, halfRegion + tileWidth) });
-
-        TileRegions.Add(new V2[] { new V2(halfRegion, halfRegion), new V2(halfRegion + tileWidth, halfRegion), 
-                                    new V2(halfRegion + tileWidth, halfRegion + tileWidth), new V2(halfRegion, halfRegion + tileWidth) });
-
-        TileRegions.Add(new V2[] { new V2(halfRegion, -halfRegion), new V2(halfRegion+tileWidth, -halfRegion), 
-                                    new V2(halfRegion+tileWidth, halfRegion), new V2(halfRegion, halfRegion) });
-
-        TileRegions.Add(new V2[] { new V2(halfRegion, -halfRegion-tileWidth), new V2(halfRegion+tileWidth, -halfRegion-tileWidth), 
-                                    new V2(halfRegion+tileWidth, -halfRegion), new V2(halfRegion, -halfRegion) });
-
-        TileRegions.Add(new V2[] { new V2(-halfRegion, -halfRegion-tileWidth), new V2(halfRegion, -halfRegion - tileWidth),
-                                    new V2(halfRegion, -halfRegion), new V2(-halfRegion, -halfRegion) });
-
-        TileRegions.Add(new V2[] { new V2(-halfRegion-tileWidth, -halfRegion-tileWidth), new V2(-halfRegion, -halfRegion-tileWidth), 
-                                    new V2(-halfRegion, -halfRegion), new V2(-halfRegion-tileWidth, -halfRegion) });
-
-        TileRegions.Add(new V2[] { new V2(-halfRegion-tileWidth, -halfRegion), new V2(-halfRegion, -halfRegion), 
-                                    new V2(halfRegion, halfRegion), new V2(-halfRegion-tileWidth, halfRegion) });
-
-        TileRegions.Add(new V2[] { new V2(-halfRegion-tileWidth, halfRegion), new V2(-halfRegion, halfRegion), 
-                                    new V2(-halfRegion, halfRegion+tileWidth), new V2(-halfRegion-tileWidth, halfRegion+tileWidth) });
+        //float halfRegion = tileWidth / 2;
     }
-
     // Start is called before the first frame update
     void Start()
     {
         for(int i = 1; i < 25; i++)
         {            
-            worldTiles[i] = Instantiate(TilePrefab, TileDefaultPositions[i].transform.position, Quaternion.identity);
+            worldTiles[i] = Instantiate(TilePrefab, TileDefaultPositions[i].GetComponent<Tile>().LowerLeft.transform.position, Quaternion.identity);
+            worldTiles[i].name = worldTiles[i].name + GUID.Generate().ToString();
         }
-        //StartCoroutine(PositionManageChecker());
+        StartCoroutine(PositionManageChecker());
     }
 
-    int WhatTileAmIIn()
+    public int WhatTileAmIIn()
     {
         int index = 0;
         Vector3 playerPos = player.transform.position;
-        for(int i = 0; i < 8; i++)
+        for (int i = 0; i < 25; i++)
         {
-            V2[] tempVecArr = TileRegions[i];
-            V2 leftLower = tempVecArr[0];
-            V2 rightLower = tempVecArr[1];
-            //V2 rightUpper = tempVecArr[2]; //not used
-            V2 leftUpper = tempVecArr[3];
-            if (playerPos.x > leftLower.x)
-                if (playerPos.x < rightLower.x)
-                    if (playerPos.y < leftUpper.y)
-                        if (playerPos.y > leftLower.y)
-                        {
-                            index = i; break;
-                        }
+            GameObject gameObjTile = TileDefaultPositions[i];
+            if (gameObjTile != null)
+            {
+                Tile tile = gameObjTile.GetComponent<Tile>();
+                if (playerPos.x > tile.LowerLeft.transform.position.x)
+                    if (playerPos.x < tile.LowerRight.transform.position.x)
+                        if (playerPos.z > tile.LowerLeft.transform.position.z)
+                            if (playerPos.z < tile.UpperLeft.transform.position.z)
+                            {
+                                index = i;
+                                break;
+                            }
+            }
         }
         return index;
     }
 
-    void UpdateTiles(int index)
+    //public void TileUpdateRoutine(int index)
+    //{
+    //    int index = 0;
+    //    Vector3 playerPos = player.transform.position;
+    //    for(int i = 0; i < 25; i++)
+    //    {
+    //        GameObject gameObjTile = TileDefaultPositions[i];
+    //        if(gameObjTile != null)
+    //        {
+    //            Tile tile = gameObjTile.GetComponent<Tile>();
+    //            if (playerPos.x > tile.LowerLeft.transform.position.x)
+    //                if (playerPos.x < tile.LowerRight.transform.position.x)
+    //                    if (playerPos.z > tile.LowerLeft.transform.position.z)
+    //                        if (playerPos.z < tile.UpperLeft.transform.position.z)
+    //                        {
+    //                            index = i;
+    //                            break;
+    //                        }
+    //        }
+    //    }     
+    //    if(index != 0)
+    //    {
+    //        UpdateTiles(index);
+    //    }
+    //    //return index;
+    //}
+
+    public void UpdateTiles(int index)
     {
         List<GameObject> tilesToDelete = new List<GameObject>();
 
-        for (int i = 1; i < TilesToDelete[index].Length; i++)
+        for (int i = 0; i < TilesToDelete[index].Length; i++)
         {
-            Destroy(worldTiles[i]);
+            int delIndex = TilesToDelete[index][i];
+            Destroy(worldTiles[delIndex]);
+        }
+
+        //List<GameObject> tempList = new List<GameObject>();
+        GameObject[] tempList = new GameObject[25];
+        for (int i = 0; i < 25; i++)
+        {
+            tempList[i] = worldTiles[i];
         }
 
         for (int i = 0; i < 25; i++)
         {
-            int tempIndex = TileMoveLookup[i][index];
-            if (tempIndex > -1)
-                worldTiles[i] = worldTiles[TileMoveLookup[i][index]];       
-            else
-                worldTiles[i] = Instantiate(TilePrefab, TileDefaultPositions[i].transform.position, Quaternion.identity);
+
+            int newIndex = TileMoveLookup[i][index];
+            if (newIndex > -1)
+                worldTiles[i] = tempList[TileMoveLookup[i][index]];       
+            //else
+            //    worldTiles[i] = Instantiate(TilePrefab, TileDefaultPositions[i].transform.position, Quaternion.identity);
         }
     }
 
     IEnumerator PositionManageChecker()
     {
-        while(true)
-        {
+        //while(true)
+        //{
             yield return new WaitForSeconds(10);
-            int index = WhatTileAmIIn();
-            if(index != 0)
-            {
-                UpdateTiles(index);
-            }
-        }
+        //    int index = WhatTileAmIIn();
+        //    if(index != 0)
+        //    {
+        //        UpdateTiles(index);
+        //    }
+        //}
     }
 }
