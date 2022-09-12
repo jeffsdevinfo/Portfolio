@@ -32,8 +32,8 @@ public class WorldManager : MonoBehaviour
          * 20   19  18  17  16
          */
         #region previousTable
-        ////                                N    NE  E   SE  S   SW  W   NW        
-        TileMoveLookup.Insert(0, new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }); //0                           
+        ////                                   N  NE E  SE S  SW W  NW        // index 0 is not used
+        TileMoveLookup.Insert(0, new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8 }); //0                           
         TileMoveLookup.Insert(1, new int[] {0, 10, 11, 2, 3, 0, 7, 8, 9 }); //1
         TileMoveLookup.Insert(2, new int[] {0, 11, 12, 13, 14, 3, 0, 1, 10 }); //2
         TileMoveLookup.Insert(3, new int[] {0, 2, 13, 14, 15, 4, 5, 0, 1 }); //3
@@ -42,7 +42,7 @@ public class WorldManager : MonoBehaviour
         TileMoveLookup.Insert(6, new int[] {0, 7, 0, 5, 18, 19, 20, 21, 22 }); //6
         TileMoveLookup.Insert(7, new int[] {0, 8, 1, 0, 5, 6, 21, 22, 23 }); //7
         TileMoveLookup.Insert(8, new int[] {0, 9, 10, 1, 0, 7, 22, 23, 24 }); //8
-        TileMoveLookup.Insert(9, new int[] { 0, -1, -1, 10, 1, 8, 23, 24, -1 }); //9
+        TileMoveLookup.Insert(9, new int[] {0, -1, -1, 10, 1, 8, 23, 24, -1 }); //9
         TileMoveLookup.Insert(10, new int[] {0, -1, -1, 11, 2, 1, 8, 9, -1 }); //10
         TileMoveLookup.Insert(11, new int[] {0, -1, -1, 12, 13, 2, 1, 10, -1 }); //11
         TileMoveLookup.Insert(12, new int[] {0, -1, -1, -1, -1, 13, 2, 11, -1 }); //12
@@ -57,17 +57,17 @@ public class WorldManager : MonoBehaviour
         TileMoveLookup.Insert(21, new int[] {0, 22, 7, 6, 19, 20, -1, -1, -1 }); //21
         TileMoveLookup.Insert(22, new int[] {0, 23, 8, 7, 6, 21, -1, -1, -1 }); //22
         TileMoveLookup.Insert(23, new int[] {0, 24, 9, 8, 7, 22, -1, -1, -1 }); //23
-        TileMoveLookup.Insert(24, new int[] { 0, -1, -1, 9, 8, 23, -1, -1, -1 }); //24
+        TileMoveLookup.Insert(24, new int[] {0, -1, -1, 9, 8, 23, -1, -1, -1 }); //24
 
-        TilesToDelete.Insert(0, new int[] { }); //0 empty
-        TilesToDelete.Insert(1, new int[] { 16, 17, 18, 19, 20 });
-        TilesToDelete.Insert(2, new int[] { 16, 17, 18, 19, 20, 21, 22, 23, 24 });
-        TilesToDelete.Insert(3, new int[] { 20, 21, 22, 23, 24 });
-        TilesToDelete.Insert(4, new int[] { 9, 10, 11, 12, 20, 21, 22, 23, 24 });
-        TilesToDelete.Insert(5, new int[] { 9, 10, 11, 12, 24 });
-        TilesToDelete.Insert(6, new int[] { 9, 10, 11, 12, 13, 14, 15, 16 });
-        TilesToDelete.Insert(7, new int[] { 12, 13, 14, 15, 16 });
-        TilesToDelete.Insert(8, new int[] { 12, 13, 14, 15, 16, 17, 18, 19, 20 });
+        TilesToDelete.Insert(0, new int[] {}); //0 empty
+        TilesToDelete.Insert(1, new int[] {16, 17, 18, 19, 20 });
+        TilesToDelete.Insert(2, new int[] {16, 17, 18, 19, 20, 21, 22, 23, 24 });
+        TilesToDelete.Insert(3, new int[] {20, 21, 22, 23, 24 });
+        TilesToDelete.Insert(4, new int[] {9, 10, 11, 12, 20, 21, 22, 23, 24 });
+        TilesToDelete.Insert(5, new int[] {9, 10, 11, 12, 24 });
+        TilesToDelete.Insert(6, new int[] {9, 10, 11, 12, 13, 14, 15, 16 });
+        TilesToDelete.Insert(7, new int[] {12, 13, 14, 15, 16 });
+        TilesToDelete.Insert(8, new int[] {12, 13, 14, 15, 16, 17, 18, 19, 20 });
         #endregion previousTable
 
         #region newTable

@@ -1,3 +1,4 @@
+#region OldVersion
 //// FloatingOrigin.cs
 //// Written by Peter Stirling
 //// 11 November 2010
@@ -39,6 +40,7 @@
 
 //    }
 //}
+#endregion OldVersion
 
 // FloatingOrigin.cs
 // Written by Peter Stirling
@@ -74,6 +76,7 @@ public class FloatingOrigin : MonoBehaviour
         int index = worldManager.WhatTileAmIIn();
         if (index != 0)
         {
+            // TODO: Optimization note: instead of finding each transform, use a hierarchy of tiles that are displaced which cascades movements for child assets associated with a tile
             Object[] objects = FindObjectsOfType(typeof(Transform));
             foreach (Object o in objects)
             {                
