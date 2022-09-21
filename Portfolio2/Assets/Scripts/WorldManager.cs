@@ -9,11 +9,11 @@ using V2 = UnityEngine.Vector2;
 public class WorldManager : MonoBehaviour
 {
     [SerializeField] GameObject[] worldTiles = new GameObject[25];
-    [SerializeField] List<GameObject> TileDefaultPositions = new List<GameObject>();
+    [SerializeField] public List<GameObject> TileDefaultPositions = new List<GameObject>();
 
-    List<int[]> TileMoveLookup = new List<int[]>();
+    List<sbyte[]> TileMoveLookup = new List<sbyte[]>();
     //List<Vector2[]> TileRegions = new List<Vector2[]>();
-    List<int[]> TilesToDelete = new List<int[]>();
+    List<sbyte[]> TilesToDelete = new List<sbyte[]>();
     
     [SerializeField] GameObject TilePrefab;
     [SerializeField] float tileWidth = 256;
@@ -33,41 +33,41 @@ public class WorldManager : MonoBehaviour
          */
         #region previousTable
         ////                                   N  NE E  SE S  SW W  NW        // index 0 is not used
-        TileMoveLookup.Insert(0, new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8 }); //0                           
-        TileMoveLookup.Insert(1, new int[] {0, 10, 11, 2, 3, 0, 7, 8, 9 }); //1
-        TileMoveLookup.Insert(2, new int[] {0, 11, 12, 13, 14, 3, 0, 1, 10 }); //2
-        TileMoveLookup.Insert(3, new int[] {0, 2, 13, 14, 15, 4, 5, 0, 1 }); //3
-        TileMoveLookup.Insert(4, new int[] {0, 3, 14, 15, 16, 17, 18, 5, 0 }); //4
-        TileMoveLookup.Insert(5, new int[] {0, 0, 3, 4, 17, 18, 19, 6, 7 }); //5
-        TileMoveLookup.Insert(6, new int[] {0, 7, 0, 5, 18, 19, 20, 21, 22 }); //6
-        TileMoveLookup.Insert(7, new int[] {0, 8, 1, 0, 5, 6, 21, 22, 23 }); //7
-        TileMoveLookup.Insert(8, new int[] {0, 9, 10, 1, 0, 7, 22, 23, 24 }); //8
-        TileMoveLookup.Insert(9, new int[] {0, -1, -1, 10, 1, 8, 23, 24, -1 }); //9
-        TileMoveLookup.Insert(10, new int[] {0, -1, -1, 11, 2, 1, 8, 9, -1 }); //10
-        TileMoveLookup.Insert(11, new int[] {0, -1, -1, 12, 13, 2, 1, 10, -1 }); //11
-        TileMoveLookup.Insert(12, new int[] {0, -1, -1, -1, -1, 13, 2, 11, -1 }); //12
-        TileMoveLookup.Insert(13, new int[] {0, 12, -1, -1, -1, 14, 3, 2, 11 }); //13
-        TileMoveLookup.Insert(14, new int[] {0, 13, -1, -1, -1, 15, 4, 3, 2 }); //14
-        TileMoveLookup.Insert(15, new int[] {0, 14, -1, -1, -1, 16, 17, 4, 3 }); //15
-        TileMoveLookup.Insert(16, new int[] {0, 15, -1, -1, -1, -1, -1, 17, 4 }); //16
-        TileMoveLookup.Insert(17, new int[] {0, 4, 15, 16, -1, -1, -1, 18, 5 }); //17
-        TileMoveLookup.Insert(18, new int[] {0, 5, 4, 17, -1, -1, -1, 19, 6 }); //18
-        TileMoveLookup.Insert(19, new int[] {0, 6, 5, 18, -1, -1, -1, 20, 21 }); //19
-        TileMoveLookup.Insert(20, new int[] {0, 21, 6, 19, -1, -1, -1, -1, -1 }); //20
-        TileMoveLookup.Insert(21, new int[] {0, 22, 7, 6, 19, 20, -1, -1, -1 }); //21
-        TileMoveLookup.Insert(22, new int[] {0, 23, 8, 7, 6, 21, -1, -1, -1 }); //22
-        TileMoveLookup.Insert(23, new int[] {0, 24, 9, 8, 7, 22, -1, -1, -1 }); //23
-        TileMoveLookup.Insert(24, new int[] {0, -1, -1, 9, 8, 23, -1, -1, -1 }); //24
+        TileMoveLookup.Insert(0, new sbyte[] {0, 1, 2, 3, 4, 5, 6, 7, 8 }); //0                           
+        TileMoveLookup.Insert(1, new sbyte[] {0, 10, 11, 2, 3, 0, 7, 8, 9 }); //1
+        TileMoveLookup.Insert(2, new sbyte[] {0, 11, 12, 13, 14, 3, 0, 1, 10 }); //2
+        TileMoveLookup.Insert(3, new sbyte[] {0, 2, 13, 14, 15, 4, 5, 0, 1 }); //3
+        TileMoveLookup.Insert(4, new sbyte[] {0, 3, 14, 15, 16, 17, 18, 5, 0 }); //4
+        TileMoveLookup.Insert(5, new sbyte[] {0, 0, 3, 4, 17, 18, 19, 6, 7 }); //5
+        TileMoveLookup.Insert(6, new sbyte[] {0, 7, 0, 5, 18, 19, 20, 21, 22 }); //6
+        TileMoveLookup.Insert(7, new sbyte[] {0, 8, 1, 0, 5, 6, 21, 22, 23 }); //7
+        TileMoveLookup.Insert(8, new sbyte[] {0, 9, 10, 1, 0, 7, 22, 23, 24 }); //8
+        TileMoveLookup.Insert(9, new sbyte[] {0, -1, -1, 10, 1, 8, 23, 24, -1 }); //9
+        TileMoveLookup.Insert(10, new sbyte[] {0, -1, -1, 11, 2, 1, 8, 9, -1 }); //10
+        TileMoveLookup.Insert(11, new sbyte[] {0, -1, -1, 12, 13, 2, 1, 10, -1 }); //11
+        TileMoveLookup.Insert(12, new sbyte[] {0, -1, -1, -1, -1, 13, 2, 11, -1 }); //12
+        TileMoveLookup.Insert(13, new sbyte[] {0, 12, -1, -1, -1, 14, 3, 2, 11 }); //13
+        TileMoveLookup.Insert(14, new sbyte[] {0, 13, -1, -1, -1, 15, 4, 3, 2 }); //14
+        TileMoveLookup.Insert(15, new sbyte[] {0, 14, -1, -1, -1, 16, 17, 4, 3 }); //15
+        TileMoveLookup.Insert(16, new sbyte[] {0, 15, -1, -1, -1, -1, -1, 17, 4 }); //16
+        TileMoveLookup.Insert(17, new sbyte[] {0, 4, 15, 16, -1, -1, -1, 18, 5 }); //17
+        TileMoveLookup.Insert(18, new sbyte[] {0, 5, 4, 17, -1, -1, -1, 19, 6 }); //18
+        TileMoveLookup.Insert(19, new sbyte[] {0, 6, 5, 18, -1, -1, -1, 20, 21 }); //19
+        TileMoveLookup.Insert(20, new sbyte[] {0, 21, 6, 19, -1, -1, -1, -1, -1 }); //20
+        TileMoveLookup.Insert(21, new sbyte[] {0, 22, 7, 6, 19, 20, -1, -1, -1 }); //21
+        TileMoveLookup.Insert(22, new sbyte[] {0, 23, 8, 7, 6, 21, -1, -1, -1 }); //22
+        TileMoveLookup.Insert(23, new sbyte[] {0, 24, 9, 8, 7, 22, -1, -1, -1 }); //23
+        TileMoveLookup.Insert(24, new sbyte[] {0, -1, -1, 9, 8, 23, -1, -1, -1 }); //24
 
-        TilesToDelete.Insert(0, new int[] {}); //0 empty
-        TilesToDelete.Insert(1, new int[] {16, 17, 18, 19, 20 });
-        TilesToDelete.Insert(2, new int[] {16, 17, 18, 19, 20, 21, 22, 23, 24 });
-        TilesToDelete.Insert(3, new int[] {20, 21, 22, 23, 24 });
-        TilesToDelete.Insert(4, new int[] {9, 10, 11, 12, 20, 21, 22, 23, 24 });
-        TilesToDelete.Insert(5, new int[] {9, 10, 11, 12, 24 });
-        TilesToDelete.Insert(6, new int[] {9, 10, 11, 12, 13, 14, 15, 16 });
-        TilesToDelete.Insert(7, new int[] {12, 13, 14, 15, 16 });
-        TilesToDelete.Insert(8, new int[] {12, 13, 14, 15, 16, 17, 18, 19, 20 });
+        TilesToDelete.Insert(0, new sbyte[] {}); //0 empty
+        TilesToDelete.Insert(1, new sbyte[] {16, 17, 18, 19, 20 });
+        TilesToDelete.Insert(2, new sbyte[] {16, 17, 18, 19, 20, 21, 22, 23, 24 });
+        TilesToDelete.Insert(3, new sbyte[] {20, 21, 22, 23, 24 });
+        TilesToDelete.Insert(4, new sbyte[] {9, 10, 11, 12, 20, 21, 22, 23, 24 });
+        TilesToDelete.Insert(5, new sbyte[] {9, 10, 11, 12, 24 });
+        TilesToDelete.Insert(6, new sbyte[] {9, 10, 11, 12, 13, 14, 15, 16 });
+        TilesToDelete.Insert(7, new sbyte[] {12, 13, 14, 15, 16 });
+        TilesToDelete.Insert(8, new sbyte[] {12, 13, 14, 15, 16, 17, 18, 19, 20 });
         #endregion previousTable
 
         #region newTable
@@ -104,19 +104,19 @@ public class WorldManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        for(int i = 1; i < 25; i++)
+        for(sbyte i = 1; i < 25; i++)
         {            
             worldTiles[i] = Instantiate(TilePrefab, TileDefaultPositions[i].GetComponent<Tile>().LowerLeft.transform.position, Quaternion.identity);
-            worldTiles[i].name = worldTiles[i].name + GUID.Generate().ToString();
+            worldTiles[i].name = worldTiles[i].name + "-Tile-" + i.ToString();
         }
         StartCoroutine(PositionManageChecker());
     }
 
-    public int WhatTileAmIIn()
+    public sbyte WhatTileAmIIn()
     {
-        int index = 0;
+        sbyte index = 0;
         Vector3 playerPos = player.transform.position;
-        for (int i = 0; i < 25; i++)
+        for (sbyte i = 0; i < 25; i++)
         {
             GameObject gameObjTile = TileDefaultPositions[i];
             if (gameObjTile != null)
@@ -162,31 +162,31 @@ public class WorldManager : MonoBehaviour
     //    //return index;
     //}
 
-    public void UpdateTiles(int index)
+    public void UpdateTiles(sbyte index)
     {
         List<GameObject> tilesToDelete = new List<GameObject>();
 
-        for (int i = 0; i < TilesToDelete[index].Length; i++)
+        for (sbyte i = 0; i < TilesToDelete[index].Length; i++)
         {
-            int delIndex = TilesToDelete[index][i];
+            sbyte delIndex = TilesToDelete[index][i];
             Destroy(worldTiles[delIndex]);
         }
 
         //List<GameObject> tempList = new List<GameObject>();
         GameObject[] tempList = new GameObject[25];
-        for (int i = 0; i < 25; i++)
+        for (sbyte i = 0; i < 25; i++)
         {
             tempList[i] = worldTiles[i];
         }
 
-        for (int i = 0; i < 25; i++)
+        for (sbyte i = 0; i < 25; i++)
         {
 
-            int newIndex = TileMoveLookup[i][index];
+            sbyte newIndex = TileMoveLookup[i][index];
             if (newIndex > -1)
                 worldTiles[i] = tempList[TileMoveLookup[i][index]];       
-            //else
-            //    worldTiles[i] = Instantiate(TilePrefab, TileDefaultPositions[i].transform.position, Quaternion.identity);
+            else
+                worldTiles[i] = Instantiate(TilePrefab, TileDefaultPositions[i].transform.position, Quaternion.identity);
         }
     }
 

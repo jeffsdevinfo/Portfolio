@@ -57,7 +57,7 @@ public class FloatingOrigin : MonoBehaviour
 {
     public float threshold = 100.0f;
     public float physicsThreshold = 1000.0f; // Set to zero to disable
-    public WorldManager worldManager;    
+    public WorldManager worldManager;
 
 #if OLD_PHYSICS
     public float defaultSleepVelocity = 0.14f;
@@ -73,9 +73,11 @@ public class FloatingOrigin : MonoBehaviour
         Vector3 cameraPosition = gameObject.transform.position;
         cameraPosition.y = 0f;
         //if (cameraPosition.magnitude > threshold)
-        int index = worldManager.WhatTileAmIIn();
+        sbyte index = worldManager.WhatTileAmIIn();
         if (index != 0)
         {
+            GameObject refDefaultTileToCenter = worldManager.TileDefaultPositions[index];
+            Tile tile = refDefaultTileToCenter.GetComponent<Tile>();
             // TODO: Optimization note: instead of finding each transform, use a hierarchy of tiles that are displaced which cascades movements for child assets associated with a tile
             Object[] objects = FindObjectsOfType(typeof(Transform));
             foreach (Object o in objects)
@@ -85,7 +87,8 @@ public class FloatingOrigin : MonoBehaviour
                 {
                     if (t.parent == null)
                     {
-                        t.position -= cameraPosition;
+                        //t.position -= cameraPosition;
+                        t.position -= tile.LowerLeft.transform.position;
                     }
                 }
             }
