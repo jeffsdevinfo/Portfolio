@@ -2328,7 +2328,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7060419367313755829, guid: 24423c6ae464fde4da0041e66cb6da4f, type: 3}
       propertyPath: m_Name
-      value: Terrain
+      value: Terrain-Tile-0
       objectReference: {fileID: 0}
     - target: {fileID: 7060419367313755829, guid: 24423c6ae464fde4da0041e66cb6da4f, type: 3}
       propertyPath: m_Layer
