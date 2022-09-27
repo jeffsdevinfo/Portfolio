@@ -184,9 +184,13 @@ public class WorldManager : MonoBehaviour
 
             sbyte newIndex = TileMoveLookup[i][index];
             if (newIndex > -1)
-                worldTiles[i] = tempList[TileMoveLookup[i][index]];       
+                worldTiles[i] = tempList[TileMoveLookup[i][index]];
             else
-                worldTiles[i] = Instantiate(TilePrefab, TileDefaultPositions[i].transform.position, Quaternion.identity);
+            {
+                Vector3 temp = new Vector3(-128, 0, -128);
+                temp = temp + TileDefaultPositions[i].transform.position;
+                worldTiles[i] = Instantiate(TilePrefab, temp, Quaternion.identity);
+            }
         }
     }
 

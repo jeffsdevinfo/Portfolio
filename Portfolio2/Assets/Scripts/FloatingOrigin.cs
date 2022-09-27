@@ -88,7 +88,9 @@ public class FloatingOrigin : MonoBehaviour
                     if (t.parent == null)
                     {
                         //t.position -= cameraPosition;
-                        t.position -= tile.LowerLeft.transform.position;
+                        Vector3 temp = new Vector3(128, 0, 128);
+                        temp = temp + tile.LowerLeft.transform.position;
+                        t.position -= temp;// tile.LowerLeft.transform.position;
                     }
                 }
             }
