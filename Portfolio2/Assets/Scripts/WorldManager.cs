@@ -31,7 +31,7 @@ public class WorldManager : MonoBehaviour
          * 21   6   5   4   15
          * 20   19  18  17  16
          */
-        #region previousTable
+        #region UsedTable
         ////                                   N  NE E  SE S  SW W  NW        // index 0 is not used
         TileMoveLookup.Insert(0, new sbyte[] {0, 1, 2, 3, 4, 5, 6, 7, 8 }); //0                           
         TileMoveLookup.Insert(1, new sbyte[] {0, 10, 11, 2, 3, 0, 7, 8, 9 }); //1
@@ -68,7 +68,7 @@ public class WorldManager : MonoBehaviour
         TilesToDelete.Insert(6, new sbyte[] {9, 10, 11, 12, 13, 14, 15, 16 });
         TilesToDelete.Insert(7, new sbyte[] {12, 13, 14, 15, 16 });
         TilesToDelete.Insert(8, new sbyte[] {12, 13, 14, 15, 16, 17, 18, 19, 20 });
-        #endregion previousTable
+        #endregion UsedTable
 
         #region newTable
         //                              N   NE  E   SE  S   SW  W   NW          tiles To load / unload
