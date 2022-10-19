@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    public int gameTileIndex;
+    public uint gameTileIndex;
     [SerializeField] public GameObject LowerLeft;
     [SerializeField] public GameObject LowerRight;
     [SerializeField] public GameObject UpperRight;
