@@ -95,9 +95,93 @@ public class DBAccess : MonoBehaviour
         dbconn = null;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
+    static public void ExecuteSQLStatement(string connectionFileName, string query)
+    {        
+        string conn = "URI=file:" + Application.dataPath + "/" + connectionFileName; //Path to database.
+        IDbConnection dbconn;
+        dbconn = (IDbConnection)new SqliteConnection(conn);
+        dbconn.Open(); //Open connection to the database.
+        IDbCommand dbcmd = dbconn.CreateCommand();                
+        dbcmd.CommandText = query;
+
+        int rowsAffected = dbcmd.ExecuteNonQuery();
+
+        Debug.Log($"{rowsAffected} rows were affected");
+
+        dbcmd.Dispose();
+        dbcmd = null;
+        dbconn.Close();
+        dbconn = null;
+    }
+
+    static public void WriteTile()
+    { 
         
     }
+
+    static public void WriteObject()
+    {
+
+    }
+    static public void WriteTerrain()
+    {
+
+    }
+
+    #region Demo
+
+    //public static void Demo()
+    //{
+    //    #region Demo
+
+    //    if (File.Exists("test.db3"))
+    //    {
+    //        File.Delete("test.db3");
+    //    }
+    //    using (var connection = new SQLiteConnection("Data Source=test.db3;Version=3"))
+    //    using (var command = new SQLiteCommand("CREATE TABLE PHOTOS(ID INTEGER PRIMARY KEY AUTOINCREMENT, PHOTO BLOB)", connection))
+    //    {
+    //        connection.Open();
+    //        command.ExecuteNonQuery();
+
+    //        byte[] photo = new byte[] { 1, 2, 3, 4, 5 };
+
+    //        command.CommandText = "INSERT INTO PHOTOS (PHOTO) VALUES (@photo)";
+    //        command.Parameters.Add("@photo", DbType.Binary, 20).Value = photo;
+    //        command.ExecuteNonQuery();
+
+    //        command.CommandText = "SELECT PHOTO FROM PHOTOS WHERE ID = 1";
+    //        using (var reader = command.ExecuteReader())
+    //        {
+    //            while (reader.Read())
+    //            {
+    //                byte[] buffer = GetBytes(reader);
+    //                for (int i = 0; i < buffer.Length; i++)
+    //                {
+    //                    Console.WriteLine(buffer[i]);
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
+
+    //static byte[] GetBytes(SQLiteDataReader reader)
+    //{
+    //    const int CHUNK_SIZE = 2 * 1024;
+    //    byte[] buffer = new byte[CHUNK_SIZE];
+    //    long bytesRead;
+    //    long fieldOffset = 0;
+    //    using (MemoryStream stream = new MemoryStream())
+    //    {
+    //        while ((bytesRead = reader.GetBytes(0, fieldOffset, buffer, 0, buffer.Length)) > 0)
+    //        {
+    //            stream.Write(buffer, 0, (int)bytesRead);
+    //            fieldOffset += bytesRead;
+    //        }
+    //        return stream.ToArray();
+    //    }
+    //}
+
+    #endregion Demo
+
 }

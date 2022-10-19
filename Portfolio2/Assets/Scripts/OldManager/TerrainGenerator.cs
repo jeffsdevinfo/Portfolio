@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class TerrainGenerator : MonoBehaviour
 {
@@ -12,15 +13,33 @@ public class TerrainGenerator : MonoBehaviour
     {
         Terrain terrain = GetComponent<Terrain>();
         terrain.terrainData = GenerateTerrain(terrain.terrainData);
+        OutputTerrainData(terrain.terrainData);
     }
 
+    static bool Output = false;
+    public static void OutputTerrainData(TerrainData td)
+    {
+        if (Output == false)
+        {
+            Output = true;
+            for(int i = 0; i < 256; i++)
+            {
+                for (int j= 0; j < 256; j++)
+                {
+                    Debug.Log(td.GetHeight(i, j));
+                }
+            }
+            
+        }
+    }
+    
     TerrainData GenerateTerrain(TerrainData terrainData)
     {
         terrainData.heightmapResolution = width + 1;
         terrainData.size = new Vector3(width, depth, height);
 
         terrainData.SetHeights(0, 0, GenerateHeights());
-
+        
         return terrainData;
     }
 
@@ -38,6 +57,7 @@ public class TerrainGenerator : MonoBehaviour
         return heights; 
     }
 
+    
     float CalculateHeight (int x, int y)
     {
         float xCoord = (float)x / width * scale;
@@ -45,4 +65,16 @@ public class TerrainGenerator : MonoBehaviour
 
         return Mathf.PerlinNoise(xCoord, yCoord);
     }
+
+    public void WriteTerrain(TerrainData td, int refTile, bool bOverWrite = false)
+    {
+        //convert terrainData to byte array
+        var byteArray = new byte[256 * 256 * 4];        
+        var floatArray = td.GetHeights(0, 0, 256, 256);
+
+        Buffer.BlockCopy(floatArray, 0, byteArray, 0, 256* 256);
+        //need to write Terrain here
+
+    }
+    
 }
