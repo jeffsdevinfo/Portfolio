@@ -106,8 +106,8 @@ public class WorldManager : MonoBehaviour
     {
         for(sbyte i = 1; i < 25; i++)
         {            
-            worldTiles[i] = Instantiate(TilePrefab, TileDefaultPositions[i].GetComponent<Tile>().LowerLeft.transform.position, Quaternion.identity);
-            worldTiles[i].name = worldTiles[i].name + "-Tile-" + i.ToString();
+            worldTiles[i] = Instantiate(TilePrefab, TileDefaultPositions[i].GetComponent<TileHolderRef>().LowerLeft.transform.position, Quaternion.identity);
+            worldTiles[i].name = worldTiles[i].name + "-TileHolderRef-" + i.ToString();
         }
         StartCoroutine(PositionManageChecker());
     }
@@ -121,7 +121,7 @@ public class WorldManager : MonoBehaviour
             GameObject gameObjTile = TileDefaultPositions[i];
             if (gameObjTile != null)
             {
-                Tile tile = gameObjTile.GetComponent<Tile>();
+                TileHolderRef tile = gameObjTile.GetComponent<TileHolderRef>();
                 if (playerPos.x > tile.LowerLeft.transform.position.x)
                     if (playerPos.x < tile.LowerRight.transform.position.x)
                         if (playerPos.z > tile.LowerLeft.transform.position.z)

@@ -53,11 +53,11 @@ using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(Camera))]
-public class FloatingOrigin : MonoBehaviour
+public class FloatingOriginNew : MonoBehaviour
 {
     public float threshold = 100.0f;
     public float physicsThreshold = 1000.0f; // Set to zero to disable
-    public WorldManager worldManager;
+    public WorldManagerNew worldManager;
 
 #if OLD_PHYSICS
     public float defaultSleepVelocity = 0.14f;
@@ -74,7 +74,7 @@ public class FloatingOrigin : MonoBehaviour
         cameraPosition.y = 0f;
         //if (cameraPosition.magnitude > threshold)
         sbyte index = worldManager.WhatTileAmIIn();
-        if (index != 0)
+        if (index != 12)
         {
             GameObject refDefaultTileToCenter = worldManager.TileDefaultPositions[index];
             TileHolderRef tile = refDefaultTileToCenter.GetComponent<TileHolderRef>();
