@@ -37,8 +37,7 @@ public class TerrainGenerator : MonoBehaviour
                 {
                     Debug.Log(td.GetHeight(i, j));
                 }
-            }
-            
+            }            
         }
     }
     
@@ -46,6 +45,12 @@ public class TerrainGenerator : MonoBehaviour
     {
         Terrain terrain = GetComponent<Terrain>();
         terrain.terrainData = GenerateTerrain(terrain.terrainData);
+    }
+
+    public void EditorSaveTerrainToDB(WorldTile wt)
+    {
+
+        DBAccess.WriteTile(wt);
     }
 
     TerrainData GenerateTerrain(TerrainData terrainData)
@@ -91,8 +96,7 @@ public class TerrainGenerator : MonoBehaviour
         return Mathf.PerlinNoise(xCoord, yCoord);
     }
 
-
-    //SAVE DATA
+    
     public void WriteTerrain(TerrainData td, int refTile, bool bOverWrite = false)
     {
         //convert terrainData to byte array

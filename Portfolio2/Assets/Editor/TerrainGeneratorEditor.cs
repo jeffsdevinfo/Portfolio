@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 
 [CustomEditor(typeof(TerrainGenerator))]
-public class TerrainEditor : Editor
+public class TerrainGeneratorEditor : Editor
 {
 
     public override void OnInspectorGUI()
@@ -19,3 +19,5 @@ public class TerrainEditor : Editor
         }
     }
 }
+
+
