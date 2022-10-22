@@ -15,7 +15,13 @@ public class WorldTileEditor : Editor
         if (GUILayout.Button("Save Tile to Database"))
         {
             Debug.Log("Save Tile To DB");
-            tg.SaveToDatabase();
+            tg.SaveTileOnlyToDatabase();
+        }
+
+        if (GUILayout.Button("Save Entire Tile to Database"))
+        {
+            Debug.Log("Save Tile To DB");
+            tg.SaveTileAndChildrenToDatabase();
         }
     }
 }

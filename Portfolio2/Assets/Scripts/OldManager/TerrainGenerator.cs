@@ -1,5 +1,8 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
+using UnityEngine.PlayerLoop;
+using System.Linq;
 
 public class TerrainGenerator : MonoBehaviour
 {
@@ -16,12 +19,15 @@ public class TerrainGenerator : MonoBehaviour
 
     [Range(0.0f, .99f)]
     public float upperRandomRange = .99f;
-        
+
+    bool IsDirty = false;
+    bool OverwriteExisting = false;
+    [SerializeField] WorldTile worldTileRef;
 
     private void Start()
     {
-        Terrain terrain = GetComponent<Terrain>();
-        terrain.terrainData = GenerateTerrain(terrain.terrainData);
+        //Terrain terrain = GetComponent<Terrain>();
+        //terrain.terrainData = GenerateTerrain(terrain.terrainData);
         //OutputTerrainData(terrain.terrainData);
     }
 
@@ -40,21 +46,56 @@ public class TerrainGenerator : MonoBehaviour
             }            
         }
     }
-    
+
+    public float[,] GetTerrainDataArray()
+    {
+        Terrain terrain = GetComponent<Terrain>();
+        return terrain.terrainData.GetHeights(0, 0, width, height);
+    }
+
+    public void LoadTerrainData(List<float> heights)
+    {
+        // section that will need to be optimized
+        float[] tempArray = Utility.ListFloatTo1DArray(heights);
+        float[,] convertedArray = Utility.OneDToTwoDArray(tempArray, width, height);
+        Terrain terrain = GetComponent<Terrain>();
+        terrain.terrainData.SetHeights(0, 0, convertedArray);        
+    }
+
+    public void ManualGenerateTerrain()
+    {
+        Terrain terrain = GetComponent<Terrain>();
+        terrain.terrainData = GenerateTerrain(terrain.terrainData);
+    }
+
+
     public void EditorGenerateTerrain()
     {
         Terrain terrain = GetComponent<Terrain>();
         terrain.terrainData = GenerateTerrain(terrain.terrainData);
     }
 
-    public void EditorSaveTerrainToDB(WorldTile wt)
-    {
+    public void EditorSaveTerrainToDB()
+    {        
+        TerrainGenerator terrainGenRef = GetComponentInChildren<TerrainGenerator>();
+        worldTileRef.dbTileTerrain.Heights = Utility.TwoDToOneDArray(terrainGenRef.GetTerrainDataArray()).ToList<float>();
 
-        DBAccess.WriteTile(wt);
+        Terrain terrain = GetComponent<Terrain>();
+        if (DBAccess.CheckTerrainExist(worldTileRef.DatabaseTileIndex))
+        {
+            if (IsDirty && OverwriteExisting)
+            {
+                DBAccess.UpdateTerrain(worldTileRef.DatabaseTileIndex, worldTileRef.dbTileTerrain);
+            }
+        }
+
+        DBAccess.InsertTerrain(worldTileRef.DatabaseTileIndex, worldTileRef.dbTileTerrain);
+        IsDirty = false;
     }
 
     TerrainData GenerateTerrain(TerrainData terrainData)
     {
+        IsDirty = true;
         terrainData.heightmapResolution = width + 1;
         terrainData.size = new Vector3(width, depth, height);
 
@@ -107,5 +148,4 @@ public class TerrainGenerator : MonoBehaviour
         //need to write Terrain here
 
     }
-    
 }

@@ -44,11 +44,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf5da6c03d118e34a89ebed2fed0ac9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DatabaseRecordNumber: -1
-  DatabaseTileNumber: 0
+  DatabaseRecordId: -1
+  DatabaseTileIndex: 0
   OverwriteExistingDBTile: 0
   LoadDistance: 0
   terrainGenRef: {fileID: 3470410120455073020}
+  worldDBGameObjects: []
 --- !u!1001 &5896049327043994198
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -100,6 +101,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7060419367313755818, guid: 24423c6ae464fde4da0041e66cb6da4f, type: 3}
+      propertyPath: worldTileRef
+      value: 
+      objectReference: {fileID: 1467754393244807170}
     - target: {fileID: 7060419367313755829, guid: 24423c6ae464fde4da0041e66cb6da4f, type: 3}
       propertyPath: m_Name
       value: Terrain

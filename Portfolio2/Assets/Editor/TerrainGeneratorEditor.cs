@@ -14,8 +14,14 @@ public class TerrainGeneratorEditor : Editor
         //tg.upperRandomRange = EditorGUILayout.FloatField(new GUIContent("Upper Rand Range", "Used exclusively when sharedRandomPerlinNoise is true"), tg.upperRandomRange);
         if (GUILayout.Button("Generate Terrain"))
         {
-            Debug.Log("We pressed Generate Terrain");
+            //Debug.Log("Pressed Generate Terrain");
             tg.EditorGenerateTerrain();
+        }
+
+        if (GUILayout.Button("Save terrain to DB"))
+        {
+            //Debug.Log("We pressed Generate Terrain");
+            tg.EditorSaveTerrainToDB();
         }
     }
 }

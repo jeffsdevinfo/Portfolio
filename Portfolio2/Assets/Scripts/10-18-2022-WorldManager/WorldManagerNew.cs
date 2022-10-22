@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using V2 = UnityEngine.Vector2;
@@ -118,28 +119,38 @@ public class WorldManagerNew : MonoBehaviour
         #endregion old Initialization
 
         WorldTile startTile = null;
-        if (DBAccess.GetTile(startingTilePosition, startTile))
-        
+        if (DBAccess.GetTile(startingTilePosition, startTile))        
         {
             // build off the starting position for the rest of the tiles
+            worldTiles[12] = startTile.gameObject;
         }
         else
         {
             // no starting index in db so just generate the tiles
             for (sbyte i = 0; i < 25; i++)
             {
-                InStantiateATile(i);
+                InstantiateATile(i);                
             }
         }
         StartCoroutine(PositionManageChecker());
     }
 
-    void InStantiateATile(int index)
+    void InstantiateATile(int index)
     {        
         worldTiles[index] = Instantiate(WorldTilePrefab, TileDefaultPositions[index].GetComponent<TileHolderRef>().LowerLeft.transform.position, 
             Quaternion.identity, WorldTileSceneContainer.transform);
         worldTiles[index].name = worldTiles[index].name + "-TileHolderRef-" + index.ToString();
+        worldTiles[index].GetComponent<TerrainGenerator>().ManualGenerateTerrain();
     }
+
+    void InstantiateATile(int index, WorldTile inputTile)
+    {
+        worldTiles[index] = Instantiate(WorldTilePrefab, TileDefaultPositions[index].GetComponent<TileHolderRef>().LowerLeft.transform.position,
+            Quaternion.identity, WorldTileSceneContainer.transform);
+        worldTiles[index].name = worldTiles[index].name + "-TileHolderRef-" + index.ToString();
+        worldTiles[index].GetComponent<TerrainGenerator>().LoadTerrainData(inputTile.dbTileTerrain.Heights);
+    }
+
 
     public sbyte WhatTileAmIIn()
     {
@@ -191,7 +202,7 @@ public class WorldManagerNew : MonoBehaviour
             {
                 Vector3 temp = new Vector3(-128, 0, -128);
                 temp = temp + TileDefaultPositions[i].transform.position;
-                InStantiateATile(i);
+                InstantiateATile(i);
             }
         }
     }
