@@ -66,10 +66,32 @@ public class TerrainGenerator : MonoBehaviour
 
         if(DBAccess.GetTerrain(tileTableIndex, ref tempTile))
         {
-            LoadTerrainData(tempTile.worldDBTerrain.Heights);
+            depth = tempTile.worldDBTerrain.depth;
+            scale = tempTile.worldDBTerrain.scale;
+            LoadTerrainData(ref tempTile.worldDBTerrain);
         }
     }
-    
+
+    public void LoadTerrainData(ref NonMonoDBTerrain nonMonoDBTerrain)
+    {
+        // section that will need to be optimized
+        float[] tempArray = Utility.ListFloatTo1DArray(nonMonoDBTerrain.Heights);
+        float[,] convertedArray = Utility.OneDToTwoDArray(tempArray, width, height);
+        Terrain terrain = GetComponent<Terrain>();
+
+        //TerrainData newTerrainData = (TerrainData)UnityEngine.Object.Instantiate(terrain.terrainData);
+        terrain.terrainData = TerrainDataCloner.Clone(terrain.terrainData);
+        terrain.terrainData.heightmapResolution = width + 1;
+        terrain.terrainData.size = new Vector3(width, depth, height);
+        terrain.terrainData.SetHeights(0, 0, convertedArray);
+        //terrain.terrainData = terrain.terrainData;
+        //terrain.terrainData.heightmapResolution = height; 
+
+
+        //        terrain.terrainData.SetHeights(0, 0, convertedArray);
+        TerrainCollider tc = terrain.GetComponent<TerrainCollider>();
+        tc.terrainData = terrain.terrainData;
+    }
 
     public void LoadTerrainData(List<float> heights)
     {
@@ -79,10 +101,10 @@ public class TerrainGenerator : MonoBehaviour
         Terrain terrain = GetComponent<Terrain>();
 
         //TerrainData newTerrainData = (TerrainData)UnityEngine.Object.Instantiate(terrain.terrainData);
-        terrain.terrainData = TerrainDataCloner.Clone(terrain.terrainData);
-        terrain.terrainData.SetHeights(0, 0, convertedArray);
+        terrain.terrainData = TerrainDataCloner.Clone(terrain.terrainData);        
         terrain.terrainData.heightmapResolution = width + 1;
         terrain.terrainData.size = new Vector3(width, depth, height);
+        terrain.terrainData.SetHeights(0, 0, convertedArray);
         //terrain.terrainData = terrain.terrainData;
         //terrain.terrainData.heightmapResolution = height; 
 
