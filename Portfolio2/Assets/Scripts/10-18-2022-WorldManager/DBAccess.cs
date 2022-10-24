@@ -297,7 +297,7 @@ public class DBAccess : MonoBehaviour
 
         IDbCommand dbcmd = dbconn.CreateCommand();
         //dbcmd.CommandText = $"INSERT INTO Terrain (tileIndex,heightData) VALUES ({tileIndex},@heightData)";
-        dbcmd.CommandText = String.Format("INSERT INTO Terrain (tileIndex,heightData) VALUES ({0},@heightData)", tileIndex);
+        dbcmd.CommandText = String.Format("INSERT INTO Terrain (tileIndex,depth,scale,heightData) VALUES ({0},{1},{2},@heightData)", tileIndex,dbTer.depth, dbTer.scale);
 
         var parameter = dbcmd.CreateParameter();
         //dbcmd.Parameters.Add("@photo", DbType.Binary, 20).Value = photo;
@@ -326,7 +326,7 @@ public class DBAccess : MonoBehaviour
 
         IDbCommand dbcmd = dbconn.CreateCommand();
         //dbcmd.CommandText = $"INSERT INTO Terrain (tileIndex,heightData) VALUES ({tileIndex},@heightData)";
-        dbcmd.CommandText = $"UPDATE Terrain SET tileIndex = {tileIndex}, heightData= @heightData";
+        dbcmd.CommandText = $"UPDATE Terrain SET tileIndex = {tileIndex}, depth={dbTer.depth}, scale={dbTer.scale}, heightData= @heightData";
         var parameter = dbcmd.CreateParameter();
         parameter.ParameterName = "@heightData";
         parameter.DbType = DbType.Binary;
@@ -343,13 +343,14 @@ public class DBAccess : MonoBehaviour
         return bReturn;
     }
 
-    static public void GetTileObjects(int tileRecord, ref WorldTile wt)
+    static public void GetTileObjects(int tileRecord, ref NonMonoWorldTile wt)
     {
 
     }
 
     static public bool CheckTileExist(int tileWorldIndex)
     {
+        bActiveTempConnection = CreateATempConnection();
         IDbCommand dbcmd = dbconn.CreateCommand();
         string sqlQuery = $"SELECT id FROM Tiles WHERE tileIndex = {tileWorldIndex}";
         dbcmd.CommandText = sqlQuery;
@@ -372,6 +373,8 @@ public class DBAccess : MonoBehaviour
         reader = null;
         dbcmd.Dispose();
         dbcmd = null;
+        if (bActiveTempConnection) CloseATempConnection();
+
         return bReturn;
     }
 
@@ -407,6 +410,7 @@ public class DBAccess : MonoBehaviour
 
     static public bool CheckTerrainExist(int tileIndex)
     {
+        bActiveTempConnection = CreateATempConnection();
         IDbCommand dbcmd = dbconn.CreateCommand();
         string sqlQuery = $"SELECT id FROM Terrain WHERE tileIndex = {tileIndex}";
         dbcmd.CommandText = sqlQuery;
@@ -429,13 +433,17 @@ public class DBAccess : MonoBehaviour
         reader = null;
         dbcmd.Dispose();
         dbcmd = null;
+
+        if (bActiveTempConnection) CloseATempConnection();
+
         return bReturn;
     }
 
-    static public bool GetTile(int tileWorldIndex, WorldTile wt)
+    //static public bool GetTile(int tileWorldIndex, WorldTile wt)
+    static public bool GetTile(int tileWorldIndex, ref NonMonoWorldTile nonMonoWT)
     {
         IDbCommand dbcmd = dbconn.CreateCommand();        
-        string sqlQuery = $"SELECT id,xcol,ycol,loadDistance FROM Tiles WHERE tileIndex = {tileWorldIndex}";
+        string sqlQuery = $"SELECT id,tileIndex,xcol,ycol,loadDistance FROM Tiles WHERE tileIndex = {tileWorldIndex}";
         dbcmd.CommandText = sqlQuery;
         IDataReader reader;
         bool bReturn = true;
@@ -443,11 +451,14 @@ public class DBAccess : MonoBehaviour
         {
             reader = dbcmd.ExecuteReader();
             while (reader.Read())
-            {                                
-                wt = new WorldTile();
-                wt.DatabaseRecordId = reader.GetInt32(0);                
-                wt.LoadDistance = reader.GetFloat(3);
-                wt.DatabaseTileIndex = reader.GetInt32(4);
+            {
+                nonMonoWT = new NonMonoWorldTile();
+
+                nonMonoWT.DatabaseRecordId = reader.GetInt32(0);
+                nonMonoWT.DatabaseTileIndex = reader.GetInt32(1);
+                nonMonoWT.LoadDistance = reader.GetFloat(4);
+                //wt.LoadDistance = reader.GetFloat(3);
+                //wt.DatabaseTileIndex = reader.GetInt32(4);
 
             }
             reader.Close();
@@ -463,34 +474,53 @@ public class DBAccess : MonoBehaviour
         dbcmd.Dispose();
         dbcmd = null;
 
-        if (wt != null)
+        if (nonMonoWT != null)
         {
             //load terrain and any child objects
             //load terrain
-            GetTerrain(wt.DatabaseRecordId, ref wt);
+            GetTerrain(nonMonoWT.DatabaseTileIndex, ref nonMonoWT);
             //load child objects
-            GetTileObjects(wt.DatabaseRecordId, ref wt);
+            GetTileObjects(nonMonoWT.DatabaseTileIndex, ref nonMonoWT);
         }
 
         return bReturn;
     }
 
-    static public void GetTerrain(int tileTableIndex, ref WorldTile wt)
+    static public bool GetTerrain(int tileTableIndex, ref NonMonoWorldTile nonMonoWT)
     {
+        bActiveTempConnection = CreateATempConnection();
         IDbCommand dbcmd = dbconn.CreateCommand();
-        string sqlQuery = $"SELECT heightData FROM Terrain WHERE id = {tileTableIndex}";
+        string sqlQuery = $"SELECT depth, scale, heightData FROM Terrain WHERE tileIndex = {tileTableIndex}";
         dbcmd.CommandText = sqlQuery;
         IDataReader reader;
+        bool bReturn = false;
         try
         {
             reader = dbcmd.ExecuteReader();
+            int passes = 0;
             while (reader.Read())
             {
-                byte[] buffer = GetBytes(reader);
-                var heightArray = new float[buffer.Length / 4];
-                Buffer.BlockCopy(buffer, 0, heightArray, 0, buffer.Length);
+                if (nonMonoWT == null) { nonMonoWT = new NonMonoWorldTile(); }
                 
-                wt.dbTileTerrain.Heights = heightArray.ToList();
+                nonMonoWT.worldDBTerrain.depth = reader.GetInt32(0);
+                nonMonoWT.worldDBTerrain.scale = reader.GetFloat(1);
+                if (passes == 0)
+                {
+                    byte[] buffer = new byte[256 * 256 * 4];
+                    reader.GetBytes(2, 0, buffer, 0, 256 * 256 * 4);
+                    var heightArray = new float[buffer.Length / 4];
+                    Buffer.BlockCopy(buffer, 0, heightArray, 0, buffer.Length);
+                    nonMonoWT.worldDBTerrain.Heights = heightArray.ToList();
+                }
+                bReturn = true;
+                passes++;
+                //nonMonoWT.worldDBTerrain.Heights = 
+
+                //byte[] buffer = GetBytes(reader);
+                //var heightArray = new float[buffer.Length / 4];
+                //Buffer.BlockCopy(buffer, 0, heightArray, 0, buffer.Length);
+
+                //nonMonoWT.worldDBTerrain.Heights = heightArray.ToList();
 
             }
             reader.Close();
@@ -504,6 +534,9 @@ public class DBAccess : MonoBehaviour
         reader = null;
         dbcmd.Dispose();
         dbcmd = null;
+        if (bActiveTempConnection) CloseATempConnection();
+
+        return bReturn;
     }
 
     static byte[] GetBytes(IDataReader reader)

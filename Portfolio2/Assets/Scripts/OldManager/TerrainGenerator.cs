@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.PlayerLoop;
 using System.Linq;
+using TreeEditor;
 
 public class TerrainGenerator : MonoBehaviour
 {
@@ -23,9 +24,10 @@ public class TerrainGenerator : MonoBehaviour
     bool IsDirty = false;
     bool OverwriteExisting = false;
     [SerializeField] WorldTile worldTileRef;
-
+    public DBTerrain dbTileTerrain;// = new DBTerrain();    
     private void Start()
     {
+        //dbTileTerrain = GetComponent<DBTerrain>();
         //Terrain terrain = GetComponent<Terrain>();
         //terrain.terrainData = GenerateTerrain(terrain.terrainData);
         //OutputTerrainData(terrain.terrainData);
@@ -53,13 +55,41 @@ public class TerrainGenerator : MonoBehaviour
         return terrain.terrainData.GetHeights(0, 0, width, height);
     }
 
+    public void EditorLoadTerrain()
+    {
+        EditorLoadTerrain(worldTileRef.DatabaseTileIndex);
+    }
+
+    public void EditorLoadTerrain(int tileTableIndex)
+    {
+        NonMonoWorldTile tempTile = null;
+
+        if(DBAccess.GetTerrain(tileTableIndex, ref tempTile))
+        {
+            LoadTerrainData(tempTile.worldDBTerrain.Heights);
+        }
+    }
+    
+
     public void LoadTerrainData(List<float> heights)
     {
         // section that will need to be optimized
         float[] tempArray = Utility.ListFloatTo1DArray(heights);
         float[,] convertedArray = Utility.OneDToTwoDArray(tempArray, width, height);
         Terrain terrain = GetComponent<Terrain>();
-        terrain.terrainData.SetHeights(0, 0, convertedArray);        
+
+        //TerrainData newTerrainData = (TerrainData)UnityEngine.Object.Instantiate(terrain.terrainData);
+        terrain.terrainData = TerrainDataCloner.Clone(terrain.terrainData);
+        terrain.terrainData.SetHeights(0, 0, convertedArray);
+        terrain.terrainData.heightmapResolution = width + 1;
+        terrain.terrainData.size = new Vector3(width, depth, height);
+        //terrain.terrainData = terrain.terrainData;
+        //terrain.terrainData.heightmapResolution = height; 
+
+
+        //        terrain.terrainData.SetHeights(0, 0, convertedArray);
+        TerrainCollider tc = terrain.GetComponent<TerrainCollider>();
+        tc.terrainData = terrain.terrainData;
     }
 
     public void ManualGenerateTerrain()
@@ -72,24 +102,29 @@ public class TerrainGenerator : MonoBehaviour
     public void EditorGenerateTerrain()
     {
         Terrain terrain = GetComponent<Terrain>();
+        //TerrainData tData = new TerrainData();
+        //tData.size = new Vector3(width, height, height);
+        //terrain.terrainData = tData;
+        terrain.terrainData = TerrainDataCloner.Clone(terrain.terrainData);
         terrain.terrainData = GenerateTerrain(terrain.terrainData);
     }
 
     public void EditorSaveTerrainToDB()
     {        
         TerrainGenerator terrainGenRef = GetComponentInChildren<TerrainGenerator>();
-        worldTileRef.dbTileTerrain.Heights = Utility.TwoDToOneDArray(terrainGenRef.GetTerrainDataArray()).ToList<float>();
-
+        dbTileTerrain.Heights = Utility.TwoDToOneDArray(terrainGenRef.GetTerrainDataArray()).ToList<float>();
+        dbTileTerrain.scale = scale;
+        dbTileTerrain.depth = depth;
         Terrain terrain = GetComponent<Terrain>();
         if (DBAccess.CheckTerrainExist(worldTileRef.DatabaseTileIndex))
         {
             if (IsDirty && OverwriteExisting)
             {
-                DBAccess.UpdateTerrain(worldTileRef.DatabaseTileIndex, worldTileRef.dbTileTerrain);
+                DBAccess.UpdateTerrain(worldTileRef.DatabaseTileIndex, dbTileTerrain);
             }
         }
 
-        DBAccess.InsertTerrain(worldTileRef.DatabaseTileIndex, worldTileRef.dbTileTerrain);
+        DBAccess.InsertTerrain(worldTileRef.DatabaseTileIndex, dbTileTerrain);
         IsDirty = false;
     }
 
@@ -133,8 +168,8 @@ public class TerrainGenerator : MonoBehaviour
 
         float xCoord = (float)x / width * tempScale;
         float yCoord = (float)y / height * tempScale;
-        
-        return Mathf.PerlinNoise(xCoord, yCoord);
+        float perlinResult = Mathf.PerlinNoise(xCoord, yCoord);
+        return perlinResult;
     }
 
     

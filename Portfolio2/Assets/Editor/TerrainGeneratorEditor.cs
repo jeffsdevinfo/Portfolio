@@ -23,6 +23,13 @@ public class TerrainGeneratorEditor : Editor
             //Debug.Log("We pressed Generate Terrain");
             tg.EditorSaveTerrainToDB();
         }
+
+        if (GUILayout.Button("Load terrain from DB"))
+        {
+            //Debug.Log("We pressed Generate Terrain");
+            tg.EditorLoadTerrain();
+        }
+
     }
 }
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 public class WorldTile : MonoBehaviour
@@ -13,7 +14,7 @@ public class WorldTile : MonoBehaviour
     public TerrainGenerator terrainGenRef;
 
     public List<DBGameObject> worldDBGameObjects = new List<DBGameObject>();
-    public DBTerrain dbTileTerrain = new DBTerrain();    
+    
     public void SaveTileOnlyToDatabase()
     {
         // check if tile exist in db
@@ -57,6 +58,18 @@ public class WorldTile : MonoBehaviour
         }
 
         TerrainGenerator terrainGenRef = GetComponentInChildren<TerrainGenerator>();
-        dbTileTerrain.Heights = Utility.TwoDToOneDArray(terrainGenRef.GetTerrainDataArray()).ToList<float>();
+        if (terrainGenRef != null)
+        {
+            terrainGenRef.dbTileTerrain.Heights = Utility.TwoDToOneDArray(terrainGenRef.GetTerrainDataArray()).ToList<float>();
+        }
+    }
+
+    public void ConfigureWithNonMonoWorldTile(ref NonMonoWorldTile inputNonMonoWorldTile)
+    {
+        DatabaseRecordId = inputNonMonoWorldTile.DatabaseRecordId;
+        DatabaseTileIndex = inputNonMonoWorldTile.DatabaseTileIndex;
+        OverwriteExistingDBTile = false;
+        LoadDistance = inputNonMonoWorldTile.LoadDistance;            
+        terrainGenRef.LoadTerrainData(inputNonMonoWorldTile.worldDBTerrain.Heights);
     }
 }
