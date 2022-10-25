@@ -106,7 +106,8 @@ public class DBAccess : MonoBehaviour
 
     static public bool ExecuteSQLStatement(string query)
     {
-        bool bResult = true;
+        bool bResult = true;       
+        bActiveTempConnection = CreateATempConnection();
         IDbCommand dbcmd = dbconn.CreateCommand();                
         dbcmd.CommandText = query;
 
@@ -122,11 +123,13 @@ public class DBAccess : MonoBehaviour
         
         dbcmd.Dispose();
         dbcmd = null;
+        if (bActiveTempConnection) CloseATempConnection();
         return bResult;
     }
 
     static public bool ExecuteSQLStatement(IDbCommand dbcmd)
     {
+        bActiveTempConnection = CreateATempConnection();
         bool bResult = true;
         int rowsAffected = -1;
         try
@@ -140,6 +143,7 @@ public class DBAccess : MonoBehaviour
         }
 
         Debug.Log($"{rowsAffected} rows were affected");
+        if (bActiveTempConnection) CloseATempConnection();
         return bResult;
     }
 
@@ -171,6 +175,7 @@ public class DBAccess : MonoBehaviour
 
     static public bool InsertTile(WorldTile wt)
     {
+        bActiveTempConnection = CreateATempConnection();
         string queryToInsertTile = $"INSERT INTO Tiles (xcol, ycol, tileIndex, loadDistance) VALUES ({0},{0},{wt.DatabaseTileIndex},{wt.LoadDistance})";        
         int tileDBRowId = -1;
         if (ExecuteSQLStatement(queryToInsertTile)) // if successful writing tile continue with writing terrain and objects
@@ -200,6 +205,7 @@ public class DBAccess : MonoBehaviour
         {
             return false;
         }
+        if (bActiveTempConnection) CloseATempConnection();
         return true;
     }
 
@@ -334,7 +340,7 @@ public class DBAccess : MonoBehaviour
         parameter.Value = heightArray;
         dbcmd.Parameters.Add(parameter);
 
-        bool bReturn = ExecuteSQLStatement(dbcmd.CommandText);
+        bool bReturn = ExecuteSQLStatement(dbcmd);
 
         dbcmd.Dispose();
         dbcmd = null;

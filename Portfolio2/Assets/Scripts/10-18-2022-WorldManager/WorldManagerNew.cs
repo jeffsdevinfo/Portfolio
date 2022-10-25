@@ -17,14 +17,17 @@ public class WorldManagerNew : MonoBehaviour
     [SerializeField] GameObject WorldTilePrefab;
     [SerializeField] GameObject player;
     [SerializeField] int universeRowTileCount = 46340; // squareroot(int max)
-
     
+
     [SerializeField] int startingTilePosition = 0;
 
+    int currentCenterTileIndex;
     List<sbyte[]> TileMoveLookup = new List<sbyte[]>();
     List<sbyte[]> TilesToDelete = new List<sbyte[]>();
     Dictionary<int, int> indexLookup = new Dictionary<int, int>();
 
+    enum Direction {N, NE, E, SE, S, SW, W, NW, None };
+    Direction lastDirection = Direction.None;
 
     private void Awake()
     {   //128,256,384,640
@@ -118,16 +121,31 @@ public class WorldManagerNew : MonoBehaviour
         //}
         #endregion old Initialization
 
-        NonMonoWorldTile nonMonoStartTile = null;
-        if (DBAccess.GetTile(startingTilePosition, ref nonMonoStartTile))        
+        NonMonoWorldTile nonMonoStartTile1 = null;
+        if (DBAccess.GetTile(startingTilePosition, ref nonMonoStartTile1))        
         {
             // build off the starting position for the rest of the tiles
             //worldTiles[12] = startTile.gameObject;            
-            InstantiateATile(12, ref nonMonoStartTile);
+            InstantiateATile(12, ref nonMonoStartTile1);
 
-            NonMonoWorldTile newRefMonoStartTile = null;
-            DBAccess.GetTile(startingTilePosition - 1, ref nonMonoStartTile);
-            InstantiateATile(11, ref newRefMonoStartTile);
+            for (int i = 0; i < 25; i++)
+            {
+                if (i == 12) continue;
+
+                NonMonoWorldTile nonMonoStartTile2 = null;
+                int calculatedTileIndex = startingTilePosition - (12 - i);
+                if (DBAccess.GetTile(calculatedTileIndex, ref nonMonoStartTile2))
+                {
+                    if (nonMonoStartTile2 != null)
+                    {
+                        InstantiateATile(i, ref nonMonoStartTile2);
+                    }
+                    else
+                    {
+                        InstantiateATile(i); // no cooresponding tile in db, create default one
+                    }
+                }
+            }
 
 
             //for (sbyte i = 0; i < 25; i++)
@@ -164,7 +182,8 @@ public class WorldManagerNew : MonoBehaviour
         worldTiles[index] = Instantiate(WorldTilePrefab, TileDefaultPositions[index].GetComponent<TileHolderRef>().LowerLeft.transform.position, 
             Quaternion.identity, WorldTileSceneContainer.transform);
         worldTiles[index].name = worldTiles[index].name + "-TileHolderRef-" + index.ToString();
-        worldTiles[index].GetComponent<TerrainGenerator>().ManualGenerateTerrain();
+        //worldTiles[index].GetComponent<TerrainGenerator>().ManualGenerateTerrain();
+        worldTiles[index].GetComponent<WorldTile>().terrainGenRef.ManualGenerateTerrain();
     }
 
     void InstantiateATile(int index, WorldTile inputTile)
@@ -208,6 +227,13 @@ public class WorldManagerNew : MonoBehaviour
                             }
             }
         }
+
+        //check for edge cases
+        if (index == 17) lastDirection = Direction.N;       //north movement = MaxInt - current > RowCount?
+        else if (index == 13) lastDirection = Direction.E;  //east movement = Current % RowCount == (RowCount - 1)?
+        else if (index == 7) lastDirection = Direction.S;   //south movement = RowCount - Current > 1?
+        else if (index == 11) lastDirection = Direction.W;  //west movement = Current % RowCount == 0?
+        //  possibly need nw, ne, se, sw possibles        
         return index;
     }
 
@@ -236,6 +262,8 @@ public class WorldManagerNew : MonoBehaviour
                 worldTiles[i] = tempList[TileMoveLookup[i][actualLookup]];
             else
             {
+
+                // calculate new tile to load
                 Vector3 temp = new Vector3(-128, 0, -128);
                 temp = temp + TileDefaultPositions[i].transform.position;
                 InstantiateATile(i);

@@ -69,7 +69,8 @@ public class WorldTile : MonoBehaviour
         DatabaseRecordId = inputNonMonoWorldTile.DatabaseRecordId;
         DatabaseTileIndex = inputNonMonoWorldTile.DatabaseTileIndex;
         OverwriteExistingDBTile = false;
-        LoadDistance = inputNonMonoWorldTile.LoadDistance;            
-        terrainGenRef.LoadTerrainData(inputNonMonoWorldTile.worldDBTerrain.Heights);
+        LoadDistance = inputNonMonoWorldTile.LoadDistance;
+        //terrainGenRef.LoadTerrainData(inputNonMonoWorldTile.worldDBTerrain.Heights);
+        terrainGenRef.LoadTerrainData(ref inputNonMonoWorldTile.worldDBTerrain);
     }
 }

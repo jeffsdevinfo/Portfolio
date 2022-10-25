@@ -22,7 +22,7 @@ public class TerrainGenerator : MonoBehaviour
     public float upperRandomRange = .99f;
 
     bool IsDirty = false;
-    bool OverwriteExisting = false;
+    public bool OverwriteExisting = false;
     [SerializeField] WorldTile worldTileRef;
     public DBTerrain dbTileTerrain;// = new DBTerrain();    
     private void Start()
@@ -74,21 +74,19 @@ public class TerrainGenerator : MonoBehaviour
 
     public void LoadTerrainData(ref NonMonoDBTerrain nonMonoDBTerrain)
     {
+        depth = nonMonoDBTerrain.depth;
+        scale = nonMonoDBTerrain.scale;
+
         // section that will need to be optimized
         float[] tempArray = Utility.ListFloatTo1DArray(nonMonoDBTerrain.Heights);
         float[,] convertedArray = Utility.OneDToTwoDArray(tempArray, width, height);
         Terrain terrain = GetComponent<Terrain>();
-
-        //TerrainData newTerrainData = (TerrainData)UnityEngine.Object.Instantiate(terrain.terrainData);
+       
         terrain.terrainData = TerrainDataCloner.Clone(terrain.terrainData);
         terrain.terrainData.heightmapResolution = width + 1;
         terrain.terrainData.size = new Vector3(width, depth, height);
         terrain.terrainData.SetHeights(0, 0, convertedArray);
-        //terrain.terrainData = terrain.terrainData;
-        //terrain.terrainData.heightmapResolution = height; 
-
-
-        //        terrain.terrainData.SetHeights(0, 0, convertedArray);
+        
         TerrainCollider tc = terrain.GetComponent<TerrainCollider>();
         tc.terrainData = terrain.terrainData;
     }
@@ -144,6 +142,7 @@ public class TerrainGenerator : MonoBehaviour
             {
                 DBAccess.UpdateTerrain(worldTileRef.DatabaseTileIndex, dbTileTerrain);
             }
+            return;
         }
 
         DBAccess.InsertTerrain(worldTileRef.DatabaseTileIndex, dbTileTerrain);
