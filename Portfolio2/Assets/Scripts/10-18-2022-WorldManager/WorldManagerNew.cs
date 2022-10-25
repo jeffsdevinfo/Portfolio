@@ -120,70 +120,67 @@ public class WorldManagerNew : MonoBehaviour
         //    InStantiateATile(i);
         //}
         #endregion old Initialization
-
-        NonMonoWorldTile nonMonoStartTile1 = null;
-        if (DBAccess.GetTile(startingTilePosition, ref nonMonoStartTile1))        
-        {
-            // build off the starting position for the rest of the tiles
-            //worldTiles[12] = startTile.gameObject;            
-            InstantiateATile(12, ref nonMonoStartTile1);
+        StartingTableIndexes(startingTilePosition);
+        //NonMonoWorldTile nonMonoStartTile1 = null;
+        //if (DBAccess.GetTile(startingTilePosition, ref nonMonoStartTile1))        
+        //{
+        //    // build off the starting position for the rest of the tiles
+        //    //worldTiles[12] = startTile.gameObject;            
+        //    InstantiateATile(12, ref nonMonoStartTile1);
 
             for (int i = 0; i < 25; i++)
             {
-                if (i == 12) continue;
-
-                NonMonoWorldTile nonMonoStartTile2 = null;
-                int calculatedTileIndex = startingTilePosition - (12 - i);
-                if (DBAccess.GetTile(calculatedTileIndex, ref nonMonoStartTile2))
-                {
-                    if (nonMonoStartTile2 != null)
-                    {
-                        InstantiateATile(i, ref nonMonoStartTile2);
-                    }
-                    else
-                    {
-                        InstantiateATile(i); // no cooresponding tile in db, create default one
-                    }
-                }
+            CreateTileWrapperStarter(i);
             }
-
-
-            //for (sbyte i = 0; i < 25; i++)
-            //{
-            //    if (i != 12)
-            //    {
-            //        int generatedIndex = (i - 12) + startingTilePosition;
-            //        NonMonoWorldTile nonMonoStartTileTemp = null;
-            //        if (DBAccess.GetTile(i, ref nonMonoStartTile))
-            //        {
-            //            InstantiateATile(i, ref nonMonoStartTile);
-
-            //        }
-            //        else
-            //        {
-            //            InstantiateATile(i);
-            //        }
-            //    }
-            //}
-        }
-        else
-        {
-            // no starting index in db so just generate the tiles
-            for (sbyte i = 0; i < 25; i++)
-            {
-                InstantiateATile(i);                
-            }
-        }
+        //}
+        //else
+        //{
+        //    // no starting index in db so just generate the tiles
+        //    for (sbyte i = 0; i < 25; i++)
+        //    {
+        //        InstantiateATile(i);                
+        //    }
+        //}
         StartCoroutine(PositionManageChecker());
     }
 
-    void InstantiateATile(int index)
+    public void CreateTileWrapperStarter(int placeHolderIndex)
+    {
+        NonMonoWorldTile nonMonoInputTil = null;
+        if (DBAccess.GetTile(startingIndexes[placeHolderIndex], ref nonMonoInputTil))
+        {
+            if (nonMonoInputTil != null)
+            {
+                InstantiateATile(placeHolderIndex, ref nonMonoInputTil);
+            }
+            else
+            { InstantiateATile(placeHolderIndex, startingIndexes[placeHolderIndex]); }
+        }
+    }
+
+    public void CreateTileWrapper(int placeHolderIndex, int tileTableIndex)
+    {
+        NonMonoWorldTile nonMonoInputTil = null;
+        if (DBAccess.GetTile(tileTableIndex, ref nonMonoInputTil))
+        {
+            if (nonMonoInputTil != null)
+            {
+                InstantiateATile(placeHolderIndex, ref nonMonoInputTil);
+            }
+            else
+            { InstantiateATile(placeHolderIndex, tileTableIndex); }
+        }
+    }
+
+    void InstantiateATile(int index, int tileTableIndex)
     {        
         worldTiles[index] = Instantiate(WorldTilePrefab, TileDefaultPositions[index].GetComponent<TileHolderRef>().LowerLeft.transform.position, 
             Quaternion.identity, WorldTileSceneContainer.transform);
         worldTiles[index].name = worldTiles[index].name + "-TileHolderRef-" + index.ToString();
         //worldTiles[index].GetComponent<TerrainGenerator>().ManualGenerateTerrain();
         worldTiles[index].GetComponent<WorldTile>().terrainGenRef.ManualGenerateTerrain();
+        WorldTile wt = worldTiles[index].GetComponent<WorldTile>();
+        wt.DatabaseTileIndex = tileTableIndex;
     }
 
     void InstantiateATile(int index, WorldTile inputTile)
@@ -254,6 +251,7 @@ public class WorldManagerNew : MonoBehaviour
             tempList[i] = worldTiles[i];
         }
 
+        List<int> indexOfNew = new List<int>();
         int actualLookup = indexLookup[index];
         for (sbyte i = 0; i < 25; i++)
         {
@@ -263,23 +261,104 @@ public class WorldManagerNew : MonoBehaviour
                 worldTiles[i] = tempList[TileMoveLookup[i][actualLookup]];
             else
             {
-
+                indexOfNew.Add(i);
                 // calculate new tile to load
-                Vector3 temp = new Vector3(-128, 0, -128);
-                temp = temp + TileDefaultPositions[i].transform.position;
-                InstantiateATile(i);
+                //Vector3 temp = new Vector3(-128, 0, -128);
+                //temp = temp + TileDefaultPositions[i].transform.position;
+                //InstantiateATile(i);
             }
         }
+
+        for(int i = 0; i < indexOfNew.Count; i++)
+        {
+            //int newTileIndex = MovementGetNewTableIndex()
+            CreateTileWrapper(indexOfNew[i], MovementGetNewTableIndex(indexOfNew[i], lastDirection));
+        }
+        
     }
 
-    public int GetNewPosition(int currentPlaceHolderIndexToFind, Direction dir)
+    int[] startingIndexes = new int[25];
+    public void StartingTableIndexes(int startingIndex)
     {
-        return 0; // return the newly calculated tileIndex
-        ////startingTilePosition - (12 - i);
-        //if(dir == Direction.N)
-        //{ }
-        //return (12 - currentPlaceHolderIndex)
+        startingIndexes = Enumerable.Repeat(-1, 25).ToArray();  // initialize values to -1
+        startingIndexes[12] = startingTilePosition;
+        startingIndexes[11] = GetNewTableIndex(startingIndexes[12], Direction.W);
+        startingIndexes[10] = GetNewTableIndex(startingIndexes[11], Direction.W);
+        startingIndexes[13] = GetNewTableIndex(startingIndexes[12], Direction.E);
+        startingIndexes[14] = GetNewTableIndex(startingIndexes[13], Direction.E);
 
+        StartingTableIndexesMinor(10);
+        StartingTableIndexesMinor(11);
+        StartingTableIndexesMinor(12);
+        StartingTableIndexesMinor(13);
+        StartingTableIndexesMinor(14);
+
+        int i = 0;
+
+    }
+
+    public void StartingTableIndexesMinor(int placeHolderIndex)
+    {
+        startingIndexes[placeHolderIndex + 5] = GetNewTableIndex(startingIndexes[placeHolderIndex],Direction.N);
+        startingIndexes[placeHolderIndex + 10] = GetNewTableIndex(startingIndexes[placeHolderIndex+5], Direction.N);
+        startingIndexes[placeHolderIndex - 5] = GetNewTableIndex(startingIndexes[placeHolderIndex], Direction.S);
+        startingIndexes[placeHolderIndex - 10] = GetNewTableIndex(startingIndexes[placeHolderIndex - 5], Direction.S);
+    }
+
+    public int GetNewTableIndex(int currentTileTableIndex, Direction dir)
+    {
+        int calculatedIndex = currentTileTableIndex;
+        if (dir == Direction.N)
+        {
+            calculatedIndex += universeRowTileCount;
+
+        }
+        else if (dir == Direction.E)
+        {
+            calculatedIndex += 1;
+        }
+        else if (dir == Direction.S)
+        {
+            calculatedIndex -= universeRowTileCount;
+        }
+        else if (dir == Direction.W)
+        {
+            calculatedIndex -= 1;
+        }
+        return calculatedIndex; // return the newly calculated tileIndex
+    }
+
+    public int MovementGetNewTableIndex(int placeHolderIndex, Direction dir)
+    {
+        WorldTile wt = null;// = worldTiles[index].GetComponent<WorldTile>();
+        int worldPHIndex = -1;
+        //int calculatedIndex = currentTileTableIndex;
+
+        if (dir == Direction.N)
+        {
+            //calculatedIndex += universeRowTileCount;
+            worldPHIndex = placeHolderIndex - 5;
+
+        }
+        else if (dir == Direction.E)
+        {
+            worldPHIndex = placeHolderIndex - 1;
+            //calculatedIndex += 1;
+        }
+        else if (dir == Direction.S)
+        {
+            worldPHIndex = placeHolderIndex +5;
+            //calculatedIndex -= universeRowTileCount;
+        }
+        else if (dir == Direction.W)
+        {
+            worldPHIndex = placeHolderIndex + 1;
+            //calculatedIndex -= 1;
+        }
+
+        wt = worldTiles[worldPHIndex].GetComponent<WorldTile>();
+        
+        return GetNewTableIndex(wt.DatabaseTileIndex,dir); // return the newly calculated tileIndex
     }
 
     IEnumerator PositionManageChecker()
