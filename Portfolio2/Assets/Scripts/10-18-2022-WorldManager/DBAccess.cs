@@ -334,11 +334,26 @@ public class DBAccess : MonoBehaviour
         //dbcmd.CommandText = $"INSERT INTO Terrain (tileIndex,heightData) VALUES ({tileIndex},@heightData)";
         dbcmd.CommandText = $"UPDATE Terrain SET tileIndex = {tileIndex}, depth={dbTer.depth}, scale={dbTer.scale}, heightData= @heightData";
         var parameter = dbcmd.CreateParameter();
+        //dbcmd.Parameters.Add("@photo", DbType.Binary, 20).Value = photo;
+
         parameter.ParameterName = "@heightData";
         parameter.DbType = DbType.Binary;
-        parameter.Size = heightArray.Length * 4;
-        parameter.Value = heightArray;
+        parameter.Size = byteArray.Length;//heightArray.Length * 4;
+        parameter.Value = byteArray;// heightArray;
         dbcmd.Parameters.Add(parameter);
+        //var parameter = dbcmd.CreateParameter();
+        //parameter.ParameterName = "@heightData";
+
+        //parameter.ParameterName = "@heightData";
+        //parameter.DbType = DbType.Binary;
+        //parameter.Size = byteArray.Length;//heightArray.Length * 4;
+        //parameter.Value = byteArray;// heightArray;
+        //dbcmd.Parameters.Add(parameter);
+
+        //parameter.DbType = DbType.Binary;
+        //parameter.Size = heightArray.Length * 4;
+        //parameter.Value = heightArray;
+        //dbcmd.Parameters.Add(parameter);
 
         bool bReturn = ExecuteSQLStatement(dbcmd);
 

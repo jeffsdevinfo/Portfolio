@@ -21,12 +21,12 @@ public class WorldManagerNew : MonoBehaviour
 
     [SerializeField] int startingTilePosition = 0;
 
-    int currentCenterTileIndex;
+    int activePlaceHolderCenter;
     List<sbyte[]> TileMoveLookup = new List<sbyte[]>();
     List<sbyte[]> TilesToDelete = new List<sbyte[]>();
     Dictionary<int, int> indexLookup = new Dictionary<int, int>();
 
-    enum Direction {N, NE, E, SE, S, SW, W, NW, None };
+    public enum Direction {N, NE, E, SE, S, SW, W, NW, None };
     Direction lastDirection = Direction.None;
 
     private void Awake()
@@ -228,6 +228,7 @@ public class WorldManagerNew : MonoBehaviour
             }
         }
 
+        activePlaceHolderCenter = index;
         //check for edge cases
         if (index == 17) lastDirection = Direction.N;       //north movement = MaxInt - current > RowCount?
         else if (index == 13) lastDirection = Direction.E;  //east movement = Current % RowCount == (RowCount - 1)?
@@ -269,6 +270,16 @@ public class WorldManagerNew : MonoBehaviour
                 InstantiateATile(i);
             }
         }
+    }
+
+    public int GetNewPosition(int currentPlaceHolderIndexToFind, Direction dir)
+    {
+        return 0; // return the newly calculated tileIndex
+        ////startingTilePosition - (12 - i);
+        //if(dir == Direction.N)
+        //{ }
+        //return (12 - currentPlaceHolderIndex)
+
     }
 
     IEnumerator PositionManageChecker()
