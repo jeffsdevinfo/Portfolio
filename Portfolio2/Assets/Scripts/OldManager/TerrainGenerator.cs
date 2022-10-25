@@ -8,6 +8,7 @@ using TreeEditor;
 public class TerrainGenerator : MonoBehaviour
 {
     public int depth = 20;
+    public int generateDepth = 1;
     public int width = 256;
     public int height = 256;
     public float scale = 20;
