@@ -45,7 +45,7 @@ public class WorldTile : MonoBehaviour
         }
         else 
         {
-            bTileSave = DBAccess.UpdateTile(this);
+            bTileSave = DBAccess.InsertTile(this);
         }
 
         //save terrainData

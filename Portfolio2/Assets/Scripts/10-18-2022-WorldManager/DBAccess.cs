@@ -289,7 +289,7 @@ public class DBAccess : MonoBehaviour
 
         IDbCommand dbcmd = dbconn.CreateCommand();
         //dbcmd.CommandText = $"INSERT INTO Terrain (tileIndex,heightData) VALUES ({tileIndex},@heightData)";
-        dbcmd.CommandText = $"UPDATE Terrain SET tileIndex = {tileIndex}, depth={dbTer.depth}, scale={dbTer.scale}, heightData= @heightData";
+        dbcmd.CommandText = $"UPDATE Terrain SET tileIndex = {tileIndex}, depth={dbTer.depth}, scale={dbTer.scale}, heightData= @heightData WHERE tileIndex = {tileIndex}";
         var parameter = dbcmd.CreateParameter();
         //dbcmd.Parameters.Add("@photo", DbType.Binary, 20).Value = photo;
 
