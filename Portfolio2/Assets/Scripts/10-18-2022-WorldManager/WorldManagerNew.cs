@@ -183,13 +183,13 @@ public class WorldManagerNew : MonoBehaviour
         wt.DatabaseTileIndex = tileTableIndex;
     }
 
-    void InstantiateATile(int index, WorldTile inputTile)
-    {
-        worldTiles[index] = Instantiate(WorldTilePrefab, TileDefaultPositions[index].GetComponent<TileHolderRef>().LowerLeft.transform.position,
-            Quaternion.identity, WorldTileSceneContainer.transform);
-        worldTiles[index].name = worldTiles[index].name + "-TileHolderRef-" + index.ToString();
-        worldTiles[index].GetComponent<TerrainGenerator>().LoadTerrainData(inputTile.terrainGenRef.dbTileTerrain.Heights);
-    }
+    //void InstantiateATile(int index, WorldTile inputTile)
+    //{
+    //    worldTiles[index] = Instantiate(WorldTilePrefab, TileDefaultPositions[index].GetComponent<TileHolderRef>().LowerLeft.transform.position,
+    //        Quaternion.identity, WorldTileSceneContainer.transform);
+    //    worldTiles[index].name = worldTiles[index].name + "-TileHolderRef-" + index.ToString();
+    //    worldTiles[index].GetComponent<TerrainGenerator>().LoadTerrainData(inputTile.terrainGenRef.dbTileTerrain.Heights);
+    //}
 
     void InstantiateATile(int index, ref NonMonoWorldTile nonMonoInputTile)
     {
@@ -198,9 +198,10 @@ public class WorldManagerNew : MonoBehaviour
         WorldTile wt = worldTiles[index].GetComponent<WorldTile>();
         wt.name = worldTiles[index].name + "-TileHolderRef-" + index.ToString();
         wt.ConfigureWithNonMonoWorldTile(ref nonMonoInputTile);
+        
+
         //wt.gameObject.GetComponentInChildren<TerrainGenerator>().LoadTerrainData(wt.terrainGenRef.dbTileTerrain.Heights);
         //wt.terrainGenRef.LoadTerrainData(wt.terrainGenRef.dbTileTerrain.Heights);
-
     }
 
 

@@ -65,44 +65,44 @@ public class DBAccess : MonoBehaviour
         dbconn = null;
     }
 
-    public static void TileTableQuery()
-    {
+    //public static void TileTableQuery()
+    //{
         
-        //IDbConnection dbconn;
-        //dbconn = (IDbConnection)new SqliteConnection(conn);
-        //dbconn.Open(); //Open connection to the database.
-        IDbCommand dbcmd = dbconn.CreateCommand();
-        //string sqlQuery = "SELECT value,name, randomSequence " + "FROM PlaceSequence";
-        string sqlQuery = "SELECT id,xcol,ycol,loadDistance FROM Tiles";
-        dbcmd.CommandText = sqlQuery;
-        IDataReader reader;
-        try
-        {
-            reader = dbcmd.ExecuteReader();
-            while (reader.Read())
-            {
-                int id = reader.GetInt32(0);
-                int xcol = reader.GetInt32(1);
-                int ycol = reader.GetInt32(2);
-                int loadDistance = reader.GetInt32(3);
+    //    //IDbConnection dbconn;
+    //    //dbconn = (IDbConnection)new SqliteConnection(conn);
+    //    //dbconn.Open(); //Open connection to the database.
+    //    IDbCommand dbcmd = dbconn.CreateCommand();
+    //    //string sqlQuery = "SELECT value,name, randomSequence " + "FROM PlaceSequence";
+    //    string sqlQuery = "SELECT id,xcol,ycol,loadDistance FROM Tiles";
+    //    dbcmd.CommandText = sqlQuery;
+    //    IDataReader reader;
+    //    try
+    //    {
+    //        reader = dbcmd.ExecuteReader();
+    //        while (reader.Read())
+    //        {
+    //            int id = reader.GetInt32(0);
+    //            int xcol = reader.GetInt32(1);
+    //            int ycol = reader.GetInt32(2);
+    //            int loadDistance = reader.GetInt32(3);
 
-                Debug.Log("id= " + id + "| xcol =" + xcol + "| ycol =" + ycol + "| loadDistance=" + loadDistance);
+    //            Debug.Log("id= " + id + "| xcol =" + xcol + "| ycol =" + ycol + "| loadDistance=" + loadDistance);
                 
-            }
-            reader.Close();
-        }
-        catch (Exception ex)
-        {
-            string code = ex.Message.ToString();
-            Debug.Log("SQL Exception {" + code + "}");
-        }
+    //        }
+    //        reader.Close();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        string code = ex.Message.ToString();
+    //        Debug.Log("SQL Exception TileTableQuery {" + code + "}");
+    //    }
         
-        reader = null;
-        dbcmd.Dispose();
-        dbcmd = null;
-        dbconn.Close();
-        dbconn = null;
-    }
+    //    reader = null;
+    //    dbcmd.Dispose();
+    //    dbcmd = null;
+    //    dbconn.Close();
+    //    dbconn = null;
+    //}
 
     static public bool ExecuteSQLStatement(string query)
     {
@@ -116,9 +116,10 @@ public class DBAccess : MonoBehaviour
             int rowsAffected = dbcmd.ExecuteNonQuery();
             Debug.Log($"{rowsAffected} rows were affected");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             bResult = false;
+            Debug.Log("SQL Exception ExecuteSQLStatement(string query) {" + ex.Message + "} || Made by Query:{" + dbcmd.CommandText + "}" );
         }
         
         dbcmd.Dispose();
@@ -140,6 +141,7 @@ public class DBAccess : MonoBehaviour
         catch (Exception ex)
         {
             bResult = false;
+            Debug.Log("SQL Exception ExecuteSQLStatement(IDbCommand dbcmd) {" + ex.Message + "} || Made by Query:{" + dbcmd.CommandText + "}");
         }
 
         Debug.Log($"{rowsAffected} rows were affected");
@@ -209,43 +211,6 @@ public class DBAccess : MonoBehaviour
         return true;
     }
 
-    static public void InsertTileFull(WorldTile wt)
-    {     
-        //string queryToInsertTile = $"INSERT INTO Tiles (xcol, ycol, tileIndex, loadDistance) VALUES ({0},{0},{wt.DatabaseTileIndex},{wt.LoadDistance})";
-        //if(ExecuteSQLStatement(queryToInsertTile)) // if successful writing tile continue with writing terrain and objects
-        //{
-        //    IDbCommand dbcmd = dbconn.CreateCommand();
-        //    dbcmd.CommandText = "select last_insert_rowid()";            
-        //    IDataReader reader;
-        //    int tileDBRowId = -1;
-        //    try
-        //    {
-        //        reader = dbcmd.ExecuteReader();
-        //        while (reader.Read())
-        //        {
-        //            tileDBRowId = reader.GetInt32(0);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        string code = ex.Message.ToString();
-        //        Debug.Log("SQL Exception - Unable to fetch tileRowId {" + code + "}");
-        //    }
-        //    reader = null;
-        //    dbcmd.Dispose();
-        //    dbcmd = null;
-            //write WorldTile.worldTileTerrain.Heights to the DB in the Terrain table
-        if(InsertTile(wt))
-        { 
-            //WriteTerrain(wt.DatabaseTileIndex, ref wt.worldTileTerrain);
-            ////Write each worldTile.worldGameObjects objec to the DB in the Objects table
-            //for(int i = 0; i < wt.worldDBGameObjects.Count; i++)
-            //{
-            //    InsertObject(wt.worldDBGameObjects[i]);
-            //}            
-        }
-    }
-
     static public bool InsertObject(DBGameObject objectToWrite)
     {
         bActiveTempConnection = CreateATempConnection();
@@ -265,7 +230,6 @@ public class DBAccess : MonoBehaviour
 
         if (bActiveTempConnection) CloseATempConnection();
 
-
         return bReturn;
     }
 
@@ -280,17 +244,10 @@ public class DBAccess : MonoBehaviour
             objectToWrite.z,
             objectToWrite.gameIdGUID);
 
-        if (ExecuteSQLStatement(queryToUpdateTile))
-        {
-            Debug.Log("Updated gameObject");
-            return true;
-        }
-        else
-        {
-            Debug.Log("Updated gameObject failed");
-            return false;
-        }
+        bool bReturn = ExecuteSQLStatement(queryToUpdateTile);
+
         if (bActiveTempConnection) CloseATempConnection();
+        return bReturn;
     }
 
 
@@ -364,10 +321,92 @@ public class DBAccess : MonoBehaviour
         return bReturn;
     }
 
-    static public void GetTileObjects(int tileRecord, ref NonMonoWorldTile wt)
+    static public bool GetTileObjects(int tileIndex, ref NonMonoWorldTile wt)
     {
+        bActiveTempConnection = CreateATempConnection();
+        IDbCommand dbcmd = dbconn.CreateCommand();
+        string sqlQuery = String.Format("SELECT id,tileIndex,prefabName,x,y,z,gameGUID FROM Objects WHERE tileIndex= \"{0}\"", tileIndex);
+        dbcmd.CommandText = sqlQuery;                
+        IDataReader reader;
+        bool bReturn = true;
+        try
+        {
+            reader = dbcmd.ExecuteReader();
+            while (reader.Read())
+            {
+                if(wt == null)
+                {
+                    wt = new NonMonoWorldTile();
+                }
+                NonMonoDBGameObject objToInsert = new NonMonoDBGameObject();
+                objToInsert.databaseTableId = reader.GetInt32(0);
+                objToInsert.worldTileIndex = reader.GetInt32(1);
+                objToInsert.prefabName = reader.GetString(2);
+                objToInsert.x = reader.GetFloat(3);
+                objToInsert.y = reader.GetFloat(4);
+                objToInsert.z = reader.GetFloat(5);
+                objToInsert.gameIdGUID = reader.GetString(6);
+                
+                wt.worldDBGameObjects.Add(objToInsert);
+            }
+            reader.Close();
+        }
+        catch (Exception ex)
+        {
+            string code = ex.Message.ToString();
+            bReturn = false;
+            Debug.Log("SQL Exception GetTileObjects {" + code + "}");
+        }
 
+        reader = null;
+        dbcmd.Dispose();
+        dbcmd = null;
+        if (bActiveTempConnection) CloseATempConnection();
+
+        return bReturn;
     }
+
+    static public bool GetTileObject(int tileIndex, string guidLookup, ref NonMonoDBGameObject gameObject)
+    {
+        bActiveTempConnection = CreateATempConnection();
+        IDbCommand dbcmd = dbconn.CreateCommand();
+        string sqlQuery = String.Format("SELECT id,tileIndex,prefabName,x,y,z,gameGUID FROM Objects WHERE gameGUID= \"{0}\"", guidLookup);
+        dbcmd.CommandText = sqlQuery;
+        IDataReader reader;
+        bool bReturn = true;
+        try
+        {
+            reader = dbcmd.ExecuteReader();
+            while (reader.Read())
+            {
+                if (gameObject == null)
+                {
+                    gameObject = new NonMonoDBGameObject();
+                }
+                gameObject.databaseTableId = reader.GetInt32(0);
+                gameObject.worldTileIndex = reader.GetInt32(1);
+                gameObject.prefabName = reader.GetString(2);
+                gameObject.x = reader.GetFloat(3);
+                gameObject.y = reader.GetFloat(4);
+                gameObject.z = reader.GetFloat(5);
+                gameObject.gameIdGUID = reader.GetString(6);
+            }
+            reader.Close();
+        }
+        catch (Exception ex)
+        {
+            string code = ex.Message.ToString();
+            bReturn = false;
+            Debug.Log("SQL Exception GetTileObject {" + code + "}");
+        }
+
+        reader = null;
+        dbcmd.Dispose();
+        dbcmd = null;
+        if (bActiveTempConnection) CloseATempConnection();
+        return bReturn;
+    }
+
 
     static public bool CheckTileExist(int tileWorldIndex)
     {
@@ -388,7 +427,7 @@ public class DBAccess : MonoBehaviour
         {
             string code = ex.Message.ToString();
             bReturn = false;
-            Debug.Log("SQL Exception {" + code + "}");
+            Debug.Log("SQL Exception CheckTileExist {" + code + "}");
         }
 
         reader = null;
@@ -418,7 +457,7 @@ public class DBAccess : MonoBehaviour
         {
             string code = ex.Message.ToString();
             bReturn = false;
-            Debug.Log("SQL Exception {" + code + "}");
+            Debug.Log("SQL Exception CheckDBGameObjectExist {" + code + "}");
         }
 
         reader = null;
@@ -448,7 +487,7 @@ public class DBAccess : MonoBehaviour
         {
             string code = ex.Message.ToString();
             bReturn = false;
-            Debug.Log("SQL Exception {" + code + "}");
+            Debug.Log("SQL Exception CheckTerrainExist {" + code + "}");
         }
 
         reader = null;
@@ -463,6 +502,7 @@ public class DBAccess : MonoBehaviour
     //static public bool GetTile(int tileWorldIndex, WorldTile wt)
     static public bool GetTile(int tileWorldIndex, ref NonMonoWorldTile nonMonoWT)
     {
+        bActiveTempConnection = CreateATempConnection();
         IDbCommand dbcmd = dbconn.CreateCommand();        
         string sqlQuery = $"SELECT id,tileIndex,xcol,ycol,loadDistance FROM Tiles WHERE tileIndex = {tileWorldIndex}";
         dbcmd.CommandText = sqlQuery;
@@ -503,6 +543,7 @@ public class DBAccess : MonoBehaviour
             //load child objects
             GetTileObjects(nonMonoWT.DatabaseTileIndex, ref nonMonoWT);
         }
+        if (bActiveTempConnection) CloseATempConnection();
 
         return bReturn;
     }
@@ -535,21 +576,13 @@ public class DBAccess : MonoBehaviour
                 }
                 bReturn = true;
                 passes++;
-                //nonMonoWT.worldDBTerrain.Heights = 
-
-                //byte[] buffer = GetBytes(reader);
-                //var heightArray = new float[buffer.Length / 4];
-                //Buffer.BlockCopy(buffer, 0, heightArray, 0, buffer.Length);
-
-                //nonMonoWT.worldDBTerrain.Heights = heightArray.ToList();
-
             }
             reader.Close();
         }
         catch (Exception ex)
         {
             string code = ex.Message.ToString();
-            Debug.Log("SQL Exception {" + code + "}");
+            Debug.Log("SQL Exception GetTerrain {" + code + "}");
         }
 
         reader = null;
@@ -560,22 +593,22 @@ public class DBAccess : MonoBehaviour
         return bReturn;
     }
 
-    static byte[] GetBytes(IDataReader reader)
-    {
-        const int CHUNK_SIZE = 2 * 1024;
-        byte[] buffer = new byte[CHUNK_SIZE];
-        long bytesRead;
-        long fieldOffset = 0;
-        using (MemoryStream stream = new MemoryStream())
-        {
-            while ((bytesRead = reader.GetBytes(0, fieldOffset, buffer, 0, buffer.Length)) > 0)
-            {
-                stream.Write(buffer, 0, (int)bytesRead);
-                fieldOffset += bytesRead;
-            }
-            return stream.ToArray();
-        }
-    }
+    //static byte[] GetBytes(IDataReader reader)
+    //{
+    //    const int CHUNK_SIZE = 2 * 1024;
+    //    byte[] buffer = new byte[CHUNK_SIZE];
+    //    long bytesRead;
+    //    long fieldOffset = 0;
+    //    using (MemoryStream stream = new MemoryStream())
+    //    {
+    //        while ((bytesRead = reader.GetBytes(0, fieldOffset, buffer, 0, buffer.Length)) > 0)
+    //        {
+    //            stream.Write(buffer, 0, (int)bytesRead);
+    //            fieldOffset += bytesRead;
+    //        }
+    //        return stream.ToArray();
+    //    }
+    //}
 
 
     #region Demo

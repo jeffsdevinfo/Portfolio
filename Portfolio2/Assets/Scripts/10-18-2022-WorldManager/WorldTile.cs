@@ -31,19 +31,53 @@ public class WorldTile : MonoBehaviour
     }
 
     public void SaveTileAndChildrenToDatabase()
-    {
-        UpdateGameObjectList();
+    {          
         // check if tile exist in db
+        bool bTileSave = false;
         if (DBAccess.CheckTileExist(DatabaseTileIndex))
         {
             if (!OverwriteExistingDBTile)
             {
+                Debug.Log("Write tile failed. Tile already exists.  Please select Overwirte Existing DB Tile to Update existing tile.");
                 return;
             }
-            DBAccess.UpdateTileFull(this);
-            return;
+            bTileSave = DBAccess.UpdateTile(this);        
         }
-        DBAccess.InsertTileFull(this);
+        else 
+        {
+            bTileSave = DBAccess.UpdateTile(this);
+        }
+
+        //save terrainData
+        UpdateDBTileTerrain();
+        terrainGenRef.EditorSaveTerrainToDB();
+
+        //loop through children and save
+        UpdateDBPropsOnChildren();
+        UpdateGameObjectList();
+        for (int i = 0; i < worldDBGameObjects.Count; i++)
+        {
+            worldDBGameObjects[i].GenerateDBProperties();
+            worldDBGameObjects[i].SaveDBGameObjectToDB();
+        }
+    }
+
+    public void UpdateDBPropsOnChildren()
+    {
+        DBGameObject[] dbGameObjects = GetComponentsInChildren<DBGameObject>();
+        for (int i = 0; i < dbGameObjects.Length; i++)
+        {
+            dbGameObjects[i].GenerateDBProperties();
+        }
+    }
+
+    public void UpdateDBTileTerrain()
+    {
+        TerrainGenerator terrainGenRef = GetComponentInChildren<TerrainGenerator>();
+        if (terrainGenRef != null)
+        {
+            terrainGenRef.dbTileTerrain.Heights = Utility.TwoDToOneDArray(terrainGenRef.GetTerrainDataArray()).ToList<float>();
+        }
     }
 
     public void UpdateGameObjectList()
@@ -56,12 +90,6 @@ public class WorldTile : MonoBehaviour
                 worldDBGameObjects.Add(dbGameObjects[i]);
             }
         }
-
-        TerrainGenerator terrainGenRef = GetComponentInChildren<TerrainGenerator>();
-        if (terrainGenRef != null)
-        {
-            terrainGenRef.dbTileTerrain.Heights = Utility.TwoDToOneDArray(terrainGenRef.GetTerrainDataArray()).ToList<float>();
-        }
     }
 
     public void ConfigureWithNonMonoWorldTile(ref NonMonoWorldTile inputNonMonoWorldTile)
@@ -69,8 +97,19 @@ public class WorldTile : MonoBehaviour
         DatabaseRecordId = inputNonMonoWorldTile.DatabaseRecordId;
         DatabaseTileIndex = inputNonMonoWorldTile.DatabaseTileIndex;
         OverwriteExistingDBTile = false;
-        LoadDistance = inputNonMonoWorldTile.LoadDistance;
-        //terrainGenRef.LoadTerrainData(inputNonMonoWorldTile.worldDBTerrain.Heights);
+        LoadDistance = inputNonMonoWorldTile.LoadDistance;       
         terrainGenRef.LoadTerrainData(ref inputNonMonoWorldTile.worldDBTerrain);
+
+        //load tile child objects
+        for (int i = 0; i < inputNonMonoWorldTile.worldDBGameObjects.Count; i++)
+        {
+            NonMonoDBGameObject nmDBObj = inputNonMonoWorldTile.worldDBGameObjects[i];
+
+            string pathToResource = $"Prefabs\\{nmDBObj.prefabName}";
+            GameObject goFromResources = Resources.Load(pathToResource) as GameObject;
+            //GameObject go = Instantiate(goFromResources, new Vector3(nmDBObj.x, nmDBObj.y, nmDBObj.z), Quaternion.identity, gameObject.transform);
+            GameObject go = Instantiate(goFromResources,gameObject.transform,false);
+            go.transform.localPosition = new Vector3(nmDBObj.x, nmDBObj.y, nmDBObj.z);
+        }
     }
 }

@@ -1,5 +1,6 @@
 public class NonMonoDBGameObject
 {
+    public int databaseTableId;
     public int worldTileIndex;    
     public string gameIdGUID = "";
     public string prefabName;

@@ -6,6 +6,6 @@ public class NonMonoWorldTile
     public int DatabaseTileIndex = 0;
     public bool OverwriteExistingDBTile = false;
     public float LoadDistance = 0;    
-    public List<DBGameObject> worldDBGameObjects = new List<DBGameObject>();
+    public List<NonMonoDBGameObject> worldDBGameObjects = new List<NonMonoDBGameObject>();
     public NonMonoDBTerrain worldDBTerrain = new NonMonoDBTerrain();
 }
