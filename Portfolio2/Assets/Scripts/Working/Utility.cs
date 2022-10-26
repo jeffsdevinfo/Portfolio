@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 
 public class Utility
-{
+{//TODO: add more todos
     public static float[] TwoDToOneDArray(float[,] input)
     {
         // Step 1: get total size of 2D array, and allocate 1D array.

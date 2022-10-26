@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class WorldTile : MonoBehaviour
 {
-    public int DatabaseRecordId = -1;
+    [HideInInspector] public int DatabaseRecordId = -1;
     public int DatabaseTileIndex = 0;
     public bool OverwriteExistingDBTile = false;
     public float LoadDistance = 0;
