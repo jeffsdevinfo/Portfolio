@@ -82,6 +82,7 @@ public class WorldTile : MonoBehaviour
 
     public void UpdateGameObjectList()
     {
+        worldDBGameObjects.Clear();
         DBGameObject[] dbGameObjects = GetComponentsInChildren<DBGameObject>();
         for(int i = 0; i < dbGameObjects.Length; i++)
         {

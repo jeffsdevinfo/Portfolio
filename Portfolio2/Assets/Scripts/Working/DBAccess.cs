@@ -17,7 +17,7 @@ public class DBAccess : MonoBehaviour
 
     static DBAccess()
     {
-        Debug.Log("DBAccess static constructor called");
+        //Debug.Log("DBAccess static constructor called");
         dbconn = (IDbConnection)new SqliteConnection(dbFileName);
         dbconn.Open(); //Open connection to the database.
         EditorPlayMode.PlayModeChanged += OnPlayModeChanged;
@@ -151,7 +151,7 @@ public class DBAccess : MonoBehaviour
 
     static public bool UpdateTile(WorldTile wt)
     {
-        string queryToUpdateTile = $"UPDATE Tiles SET tileIndex = {wt.DatabaseTileIndex}, xcol = {0}, ycol = {0}, loadDistance = {wt.LoadDistance})";
+        string queryToUpdateTile = $"UPDATE Tiles SET tileIndex = {wt.DatabaseTileIndex}, xcol = {0}, ycol = {0}, loadDistance = {wt.LoadDistance} WHERE tileIndex = {wt.DatabaseTileIndex}";
         if (ExecuteSQLStatement(queryToUpdateTile)) // if successful writing tile continue with writing terrain and objects
         {
             Debug.Log("Updated tile");

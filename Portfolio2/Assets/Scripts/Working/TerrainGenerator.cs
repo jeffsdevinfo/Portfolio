@@ -127,9 +127,13 @@ public class TerrainGenerator : MonoBehaviour
         Terrain terrain = GetComponent<Terrain>();
         if (DBAccess.CheckTerrainExist(worldTileRef.DatabaseTileIndex))
         {
-            if (IsDirty && OverwriteExisting)
+            if (IsDirty || OverwriteExisting)
             {
                 DBAccess.UpdateTerrain(worldTileRef.DatabaseTileIndex, dbTileTerrain);
+            }
+            else
+            {
+                Debug.Log("Update terrain requires overwrite option selected");
             }
             return;
         }
