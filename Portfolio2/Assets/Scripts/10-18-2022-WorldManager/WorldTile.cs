@@ -106,8 +106,7 @@ public class WorldTile : MonoBehaviour
             NonMonoDBGameObject nmDBObj = inputNonMonoWorldTile.worldDBGameObjects[i];
 
             string pathToResource = $"Prefabs\\{nmDBObj.prefabName}";
-            GameObject goFromResources = Resources.Load(pathToResource) as GameObject;
-            //GameObject go = Instantiate(goFromResources, new Vector3(nmDBObj.x, nmDBObj.y, nmDBObj.z), Quaternion.identity, gameObject.transform);
+            GameObject goFromResources = Resources.Load(pathToResource) as GameObject;            
             GameObject go = Instantiate(goFromResources,gameObject.transform,false);
             go.transform.localPosition = new Vector3(nmDBObj.x, nmDBObj.y, nmDBObj.z);
         }

@@ -14,10 +14,6 @@ public class TerrainGenerator : MonoBehaviour
     public float scale = 20;
 
     public bool sharedRandomPerlinNoise = false;
-    //public bool completeRandomPerlinNoise = false;
-
-    //[Range(0.0f, .99f)]
-    //public float lowerRandomRange = 0.0f;
 
     [Range(0.0f, .99f)]
     public float upperRandomRange = .99f;
@@ -98,17 +94,12 @@ public class TerrainGenerator : MonoBehaviour
         float[] tempArray = Utility.ListFloatTo1DArray(heights);
         float[,] convertedArray = Utility.OneDToTwoDArray(tempArray, width, height);
         Terrain terrain = GetComponent<Terrain>();
-
-        //TerrainData newTerrainData = (TerrainData)UnityEngine.Object.Instantiate(terrain.terrainData);
+        
         terrain.terrainData = TerrainDataCloner.Clone(terrain.terrainData);        
         terrain.terrainData.heightmapResolution = width + 1;
         terrain.terrainData.size = new Vector3(width, depth, height);
         terrain.terrainData.SetHeights(0, 0, convertedArray);
-        //terrain.terrainData = terrain.terrainData;
-        //terrain.terrainData.heightmapResolution = height; 
 
-
-        //        terrain.terrainData.SetHeights(0, 0, convertedArray);
         TerrainCollider tc = terrain.GetComponent<TerrainCollider>();
         tc.terrainData = terrain.terrainData;
     }
@@ -123,9 +114,6 @@ public class TerrainGenerator : MonoBehaviour
     public void EditorGenerateTerrain()
     {
         Terrain terrain = GetComponent<Terrain>();
-        //TerrainData tData = new TerrainData();
-        //tData.size = new Vector3(width, height, height);
-        //terrain.terrainData = tData;
         terrain.terrainData = TerrainDataCloner.Clone(terrain.terrainData);
         terrain.terrainData = GenerateTerrain(terrain.terrainData);
     }
@@ -179,10 +167,7 @@ public class TerrainGenerator : MonoBehaviour
     float CalculateHeight (int x, int y)
     {
         float tempScale = scale;
-        //if(completeRandomPerlinNoise)
-        //{
-        //    tempScale = UnityEngine.Random.Range(lowerRandomRange, upperRandomRange) * tempScale;
-        //}
+
         if(sharedRandomPerlinNoise)
         {
             tempScale = scale * upperRandomRange;  // only use upper Random Range            

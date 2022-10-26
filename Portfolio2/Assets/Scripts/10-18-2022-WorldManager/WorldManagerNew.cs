@@ -183,14 +183,6 @@ public class WorldManagerNew : MonoBehaviour
         wt.DatabaseTileIndex = tileTableIndex;
     }
 
-    //void InstantiateATile(int index, WorldTile inputTile)
-    //{
-    //    worldTiles[index] = Instantiate(WorldTilePrefab, TileDefaultPositions[index].GetComponent<TileHolderRef>().LowerLeft.transform.position,
-    //        Quaternion.identity, WorldTileSceneContainer.transform);
-    //    worldTiles[index].name = worldTiles[index].name + "-TileHolderRef-" + index.ToString();
-    //    worldTiles[index].GetComponent<TerrainGenerator>().LoadTerrainData(inputTile.terrainGenRef.dbTileTerrain.Heights);
-    //}
-
     void InstantiateATile(int index, ref NonMonoWorldTile nonMonoInputTile)
     {
         worldTiles[index] = Instantiate(WorldTilePrefab, TileDefaultPositions[index].GetComponent<TileHolderRef>().LowerLeft.transform.position,
@@ -198,10 +190,6 @@ public class WorldManagerNew : MonoBehaviour
         WorldTile wt = worldTiles[index].GetComponent<WorldTile>();
         wt.name = worldTiles[index].name + "-TileHolderRef-" + index.ToString();
         wt.ConfigureWithNonMonoWorldTile(ref nonMonoInputTile);
-        
-
-        //wt.gameObject.GetComponentInChildren<TerrainGenerator>().LoadTerrainData(wt.terrainGenRef.dbTileTerrain.Heights);
-        //wt.terrainGenRef.LoadTerrainData(wt.terrainGenRef.dbTileTerrain.Heights);
     }
 
 
@@ -263,16 +251,11 @@ public class WorldManagerNew : MonoBehaviour
             else
             {
                 indexOfNew.Add(i);
-                // calculate new tile to load
-                //Vector3 temp = new Vector3(-128, 0, -128);
-                //temp = temp + TileDefaultPositions[i].transform.position;
-                //InstantiateATile(i);
             }
         }
 
         for(int i = 0; i < indexOfNew.Count; i++)
-        {
-            //int newTileIndex = MovementGetNewTableIndex()
+        {            
             CreateTileWrapper(indexOfNew[i], MovementGetNewTableIndex(indexOfNew[i], lastDirection));
         }
         
@@ -331,30 +314,24 @@ public class WorldManagerNew : MonoBehaviour
 
     public int MovementGetNewTableIndex(int placeHolderIndex, Direction dir)
     {
-        WorldTile wt = null;// = worldTiles[index].GetComponent<WorldTile>();
-        int worldPHIndex = -1;
-        //int calculatedIndex = currentTileTableIndex;
+        WorldTile wt = null;
+        int worldPHIndex = -1;        
 
         if (dir == Direction.N)
-        {
-            //calculatedIndex += universeRowTileCount;
+        {            
             worldPHIndex = placeHolderIndex - 5;
-
         }
         else if (dir == Direction.E)
         {
-            worldPHIndex = placeHolderIndex - 1;
-            //calculatedIndex += 1;
+            worldPHIndex = placeHolderIndex - 1;            
         }
         else if (dir == Direction.S)
         {
-            worldPHIndex = placeHolderIndex +5;
-            //calculatedIndex -= universeRowTileCount;
+            worldPHIndex = placeHolderIndex +5;            
         }
         else if (dir == Direction.W)
         {
-            worldPHIndex = placeHolderIndex + 1;
-            //calculatedIndex -= 1;
+            worldPHIndex = placeHolderIndex + 1;            
         }
 
         wt = worldTiles[worldPHIndex].GetComponent<WorldTile>();
