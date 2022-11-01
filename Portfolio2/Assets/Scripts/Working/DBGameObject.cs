@@ -13,7 +13,7 @@ public class DBGameObject : MonoBehaviour
     public string prefabName;    
     public float x, y, z;
     public bool OverwriteExisting = false;
-
+    public bool forceOverwrite = false;
     //cache states
     private string gameIdGUIdPreserve = "";
     private string prefabPreserve = "";
@@ -64,7 +64,7 @@ public class DBGameObject : MonoBehaviour
     {        
         if(DBAccess.CheckDBGameObjectExist(gameIdGUID))
         {
-            if (OverwriteExisting && CheckIsDirty())
+            if (OverwriteExisting && CheckIsDirty() || forceOverwrite)
             {
                 //update 
                 DBAccess.UpdatetObject(this);

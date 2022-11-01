@@ -236,7 +236,7 @@ public class DBAccess : MonoBehaviour
     static public bool UpdatetObject(DBGameObject objectToWrite)
     {
         bActiveTempConnection = CreateATempConnection();        
-        string queryToUpdateTile = String.Format("UPDATE Objects SET tileIndex = {0}, prefabName = \"{1}\", x = {2}, y = {3}, z = {4}, gameGuid = \"{5}\"))",
+        string queryToUpdateTile = String.Format("UPDATE Objects SET tileIndex = {0}, prefabName = \"{1}\", x = {2}, y = {3}, z = {4} WHERE gameGuid = \"{5}\"",
             objectToWrite.worldTileIndex,
             objectToWrite.prefabName,
             objectToWrite.x,
