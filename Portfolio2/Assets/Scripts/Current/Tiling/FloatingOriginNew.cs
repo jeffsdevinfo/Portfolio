@@ -49,6 +49,11 @@
 // Updated to Unity 5.x particle system by Tony Lovell 14 January, 2016
 // fix to ensure ALL particles get moved by Tony Lovell 8 September, 2016
 // URL: http://wiki.unity3d.com/index.php/Floating_Origin
+
+// Copyright (c) 2022 Jeff Simon
+// FloatingOrigin Modified to include Tiling 
+// Distributed under the MIT/X11 software license, see the accompanying
+// file license.txt or http://www.opensource.org/licenses/mit-license.php.
 using UnityEngine;
 using System.Collections;
 

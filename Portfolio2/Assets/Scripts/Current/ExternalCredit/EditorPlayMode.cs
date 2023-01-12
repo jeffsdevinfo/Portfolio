@@ -2,6 +2,10 @@
 // https://answers.unity.com/questions/447701/event-for-unity-editor-pause-and-playstop-events.html
 // Stephen Lautier
 
+// Copyright (c) 2022 Jeff Simon
+// Distributed under the MIT/X11 software license, see the accompanying
+// file license.txt or http://www.opensource.org/licenses/mit-license.php.
+
 using UnityEditor;
 using System;
 

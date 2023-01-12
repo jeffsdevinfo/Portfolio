@@ -1,3 +1,5 @@
+// Copyright (c) Oliver Iking
+
 using UnityEngine;
 
 /// <summary>
